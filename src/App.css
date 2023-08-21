@@ -1,0 +1,58 @@
+.Tag {
+  text-align: center;
+  align-items: center;
+  font-size: larger;
+  background-color: #ffe600;
+  width: 70px;
+  height: 35px;
+  position: fixed;
+  top: 75px;
+  right: 0;
+  border-top-left-radius: 30px; /* Adjust the radius value as needed */
+  border-bottom-left-radius: 30px; 
+  border-left: 3px solid black;
+  border-top: 3px solid black;
+  border-bottom: 3px solid black;
+  
+}
+
+.Tag:hover {
+  background-color: #ddc704;
+}
+
+
+body, html,iframe {
+  overflow: hidden;
+  /* background-color: #;
+  border-style: none;
+  position:'fixed';
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 200px;
+  z-index: 999999; */
+
+}
+
+
+.Iframe{
+  overflow: hidden;
+  /* background-color: #; */
+  border-style: none;
+  position:'fixed';
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 200px;
+  z-index: 999999;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+

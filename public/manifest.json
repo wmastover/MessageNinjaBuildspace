@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Message Ninja 2",
+  "description": "Message ninja- but injected into the page",
+  "version": "1.0.0",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*", "*://*.messageninja.ai/*"],
+      "js": [
+        "login.js",
+        "initializeUI.js",
+        "getProfileInfo.js",
+        "sendGPTQuery.js"
+        
+        
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["index.html", "/react/index.js", "/react/vendor.js", "/react/index.css"],
+      "matches": ["*://*.linkedin.com/*", "*://*.messageninja.ai/*"]
+    }
+  ],
+  "background": {  
+    "service_worker": "background.js"
+  }
+}
