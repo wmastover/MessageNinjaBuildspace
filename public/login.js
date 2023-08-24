@@ -35,6 +35,7 @@ function sendMessageToBackgroundScript(message) {
     });
   }
 
+//check if the user is logged in
 
 const toSend = {
 type: "checkLogin"
@@ -46,20 +47,28 @@ sendMessageToBackgroundScript(toSend).then((response) => {
         
         console.log("logged In")
         
-        let messageData = {
-            action: "returnLoggedIn",
-            payload: "success"
-            };
+        // let messageData = {
+        //     action: "returnLoggedIn",
+        //     payload: "success"
+        //     };
 
-        setTimeout(() => {
-        const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData } });
-        window.dispatchEvent(event);
-        }, 2000);
+        // setTimeout(() => {
+        // const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData } });
+        // window.dispatchEvent(event);
+        // }, 2000);
 
-    } else {
+    } else if (response.success == false) {
         console.log("not logged in")
         console.log(response)
-        setLoggedIn(false)
+        let messageData = {
+          action: "returnLoggedIn",
+          payload: "failed"
+          };
+
+      setTimeout(() => {
+      const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData } });
+      window.dispatchEvent(event);
+      }, 2000);
     }
 })
 

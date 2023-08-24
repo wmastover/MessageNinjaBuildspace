@@ -170,7 +170,7 @@ window.addEventListener('event', (e) => {
 
             const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData } });
             window.dispatchEvent(event);
-        }, 2000); // Delay of 2 seconds
+        }, 1000); // Delay of 2 seconds
     }
 });
 

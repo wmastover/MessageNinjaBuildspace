@@ -20,3 +20,9 @@ export type loggedInSliceType = {
 export type messageSliceType = {
     message: string
 }
+
+export type iframeSliceType = {
+    width: string;
+    height: string
+}
+

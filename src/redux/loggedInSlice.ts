@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loggedInSliceType } from "../types"
 
-const initialState = {loggedIn: false} as loggedInSliceType
+const initialState = {loggedIn: true} as loggedInSliceType
 
 export const loggedInSlice = createSlice({
 

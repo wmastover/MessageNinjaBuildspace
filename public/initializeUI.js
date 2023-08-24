@@ -34,6 +34,12 @@
 console.log("initialiseUI run")
 const app = document.createElement('div');
 app.id = 'message-ninja-root';
+app.style.width = '300px';  // Setting width to 300px
+app.style.height = '225px';
+
+
+
+
 document.body.append(app);
 const src = chrome?.runtime?.getURL('/react/index.js');
 import(src);

@@ -1,3 +1,7 @@
+
+
+
+
 .Tag {
   text-align: center;
   align-items: center;
@@ -6,7 +10,7 @@
   width: 70px;
   height: 35px;
   position: fixed;
-  top: 75px;
+  top: 5px;
   right: 0;
   border-top-left-radius: 30px; /* Adjust the radius value as needed */
   border-bottom-left-radius: 30px; 
@@ -23,29 +27,11 @@
 
 body, html,iframe {
   overflow: hidden;
-  /* background-color: #;
-  border-style: none;
-  position:'fixed';
-  right: 0;
-  top: 0;
-  width: 300px;
-  height: 200px;
-  z-index: 999999; */
-
+  width: 300px !important;
+  height: 225px !important;
+  
 }
 
-
-.Iframe{
-  overflow: hidden;
-  /* background-color: #; */
-  border-style: none;
-  position:'fixed';
-  right: 0;
-  top: 0;
-  width: 300px;
-  height: 200px;
-  z-index: 999999;
-}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -55,4 +41,134 @@ body, html,iframe {
 .spinning {
   animation: spin 1s linear infinite;
 }
+
+.hyperlink {
+  color: #00aaff
+}
+
+.heading {
+  color: #E0E0E0;
+}
+
+@font-face {
+  font-family: 'DINCondensed-Regular.ttf';
+  src: url('./assets/DINCondensed-Regular.ttf') format('truetype'),
+       url('./assets/DINCondensed-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.app {
+  width: 300px;
+  height: 225px;
+  background-color: #1E1E1E ;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px 0 0 15px;
+  flex: 5;
+}
+
+
+.textBox  {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  display: flex;
+  flex: 1;
+  background-color: #272727;
+  color: #E0E0E0;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0.5px solid #7f7f7f;;
+  overflow: scroll
+}
+
+.textBox:hover  {
+  color: #ffe600;
+  border: 0.5px solid #ffe600
+}
+
+.textBox:focus {
+  outline: none !important;
+  color: #ffe600;
+  border: 0.5px solid #ffe600
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+}
+
+.textBoxContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+}
+
+.button {
+  display: flex;           
+  justify-content: center;  
+  align-items: center;  
+  flex: 1;
+  background-color: #333333;
+  color: #E0E0E0;
+  border-radius: 4px;
+  border: 0.5px solid #7f7f7f;;
+  
+  margin-top: 5px;
+  margin-bottom: 10px;
+  
+}
+
+.copy {
+  font-size: 1.3rem;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.reload {
+  font-size: 1.5rem;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.settings {
+  font-size: 1.3rem;
+  margin-left: 5px;
+  margin-right: 10px;
+}
+
+.button:hover {
+  color: #ffe600;
+  border: 0.5px solid #ffe600;
+}
+
+
+.unselectable {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none;
+}
+
+.editIcon {
+  position: absolute;
+  top: 15px;    /* Adjust as necessary */
+  right: 15px;  /* Adjust as necessary */
+  cursor: pointer; /* Make it look clickable */
+  z-index: 2;  /* Make sure it appears above other content */
+}
+
+/* Ensure that the text or textarea doesn't go under the icon */
+
 

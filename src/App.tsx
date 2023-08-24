@@ -44,6 +44,9 @@ useEffect(() => {
               setShowUI(false)
             }
             setCurrentURL(e.detail.data.payload)
+            dispatch(changeLoading({ loading: true }));
+            dispatch(changeMessage({ message: "loading" }));
+
           }
 
         } else {
@@ -83,11 +86,18 @@ useEffect(() => {
         console.log("app.tsx recieved this returnLoggedIn")
         console.log(e.detail.data)
 
+        
+
         if (e.detail.data.payload == "success") {
-          console.log("app.tsx recieved this payload from ")
+          console.log("loggedIn, setting loggedIn to true")
           dispatch(changeLoggedIn({ loggedIn: true }));
-          console.log("changed logged in to true")
-        } 
+        } else if (e.detail.data.payload == "failed"){
+          console.log("not loggedIn, setting loggedIn to false")
+          dispatch(changeLoggedIn({ loggedIn: false }));
+        }
+
+
+
       } else if (e.detail.data.action == "returnQueryGPT") {
         dispatch(changeMessage({message: e.detail.data.payload}))
         dispatch(changeLoading({loading: false}))
