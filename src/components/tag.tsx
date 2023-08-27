@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineLoading3Quarters, AiOutlineCheck } from "react-icons/ai"
+import { AiOutlineLoading3Quarters,  } from "react-icons/ai"
 import { MySvgIcon } from './svg';
 import { useSelector , useDispatch} from 'react-redux';
 import { changeLoading } from "../redux/loadingSlice"

@@ -26,3 +26,8 @@ export type iframeSliceType = {
     height: string
 }
 
+export type pagesSliceType = {
+    showTag: boolean;
+    showSettings: boolean
+}
+

@@ -20,7 +20,8 @@
         "login.js",
         "initializeUI.js",
         "getProfileInfo.js",
-        "sendGPTQuery.js"
+        "sendGPTQuery.js",
+        "copyToClipboard.js"
         
         
       ],

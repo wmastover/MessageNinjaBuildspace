@@ -8,18 +8,36 @@ import { useSelector , useDispatch} from 'react-redux';
 import { changeLoggedIn } from './redux/loggedInSlice';
 import { changeMessage } from './redux/messageSlice';
 import { changeLoading } from './redux/loadingSlice';
-
+import { changeTag } from './redux/pagesSlice';
+import { changeIframe } from './redux/iframeSlice';
+import { SettingsPage } from './components/settingsPage';
+import { Tag } from './components/tag';
 
 function App() {
-  const [showUI, setShowUI] = useState<boolean>(false);
+  const [showUI, setShowUI] = useState<boolean>(true);
   const [currentURL, setCurrentURL] = useState<string>("none");
-  const loggedIn = useSelector((state: any) => state.loggedIn.value.loggedIn); // assuming you have a combined reducer and `loading` is the key for this slice
+
+  const loggedIn = useSelector((state: any) => state.loggedIn.value.loggedIn)
+  const showTag = useSelector((state: any) => state.pages.value.showTag)
+  const showSettings = useSelector((state: any) => state.pages.value.showSettings)
+
   const dispatch = useDispatch();
 
 
+  const handleTagClick = () => {
+    dispatch(changeIframe({
+      width: "300px",
+      height: "225px"
 
-useEffect(() => {
-  console.log("rerunning use effect")
+    }))
+    // setShowCoreApp(!showCoreApp);
+    dispatch(changeTag(false)); // Set the state to show the core app
+  };
+
+
+
+  useEffect(() => {
+    console.log("rerunning use effect")
 
   //runs when event is recieved by the content script
   const handleEvent = (e: CustomEvent<AnotherCustomEventData>) => {
@@ -32,6 +50,13 @@ useEffect(() => {
             console.log("new URL")
             if (e.detail.data.payload.startsWith("https://www.linkedin.com/in/")) {
               setShowUI(true)
+              dispatch(changeTag(true));
+              dispatch(changeIframe({
+                width: "80px",
+                height: "50px",
+          
+              }))
+
   
               //get profile infor from getProfileInfo.js
               const messageData = {
@@ -101,7 +126,7 @@ useEffect(() => {
       } else if (e.detail.data.action == "returnQueryGPT") {
         dispatch(changeMessage({message: e.detail.data.payload}))
         dispatch(changeLoading({loading: false}))
-      }
+      } 
   };
 
   window.addEventListener('contentScriptEvent', handleEvent as EventListener);
@@ -113,9 +138,22 @@ useEffect(() => {
 
   return (
   <>
-  { loggedIn ?
+  {loggedIn ?
     <>
-      {showUI ?  <CoreApp/> : <></>}
+      {showUI ?
+      <>
+        {showTag? 
+          <Tag onClickTag={() => {handleTagClick()}}/> 
+          : 
+          <>
+          {showSettings? <SettingsPage/> : <CoreApp/>}
+          </> 
+          }
+      </>
+        : 
+      <>
+      </>
+      }
     </>
     :
     <LoginPage/>

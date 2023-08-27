@@ -4,49 +4,45 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import { changeMessage } from '../redux/messageSlice';
 import { BsClipboard, BsFillClipboardCheckFill, BsGear, BsArrowRepeat, BsPencilFill } from 'react-icons/bs';
+import { BiSave, BiSolidSave, BiChevronLeft } from "react-icons/bi"
 import { changeIframe } from '../redux/iframeSlice';
-import { changeSettings, changeTag } from '../redux/pagesSlice';
+import { changeTag } from '../redux/pagesSlice';
 import { sendEvent } from '../functions/sendEvent';
+import { Dropdown } from '../components/dropdown';
 
 
-
-export const CoreApp: React.FC = () => {
+export const SettingsPage: React.FC = () => {
   // const [showCoreApp, setShowCoreApp] = useState(false);
-  const message = useSelector((state: any) => state.message.value.message)
+  const [template, setTemplate] = useState<string>("#personalisedLine CTA");
   const showTag = useSelector((state: any) => state.pages.value.showTag)
 
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
+  const [saved, setSaved] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
 
-  useEffect(() => {}, [message])
+  useEffect(() => {}, [template])
 
-  const handleSettingsClick = () => {
+  const handleTagClick = () => {
     dispatch(changeIframe({
       width: "300px",
-      height: "400px"
+      height: "225px"
 
     }))
     // setShowCoreApp(!showCoreApp);
-    dispatch(changeSettings(true)); // Set the state to show the core app
+    dispatch(changeTag(false)); // Set the state to show the core app
   };
 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(changeMessage({ message: event.target.value }));
+    setTemplate(event.target.value) 
   };
 
-  const handleInputBlur = () => {
-    setIsEditing(false);
-  };
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleTextClick = () => {
-    setIsEditing(true);
-    setCopied(false)
+    setSaved(false)
   };
 
 
@@ -63,53 +59,41 @@ export const CoreApp: React.FC = () => {
   }
 
   const handleCopyClick = () => {
-    setCopied(true)
+    setSaved(true)
 
-    const messageData = {
-      action: "copyToClipboard",
-      payload: message
-    }
-
-    sendEvent(messageData)
   };
 
   useEffect(() => {
-    if (isEditing) {
       inputRef.current?.focus();
-    }
-  }, [isEditing]);
+   
+  }, []);
 
 
   return (
     <>
-      <div className='app' >
-        <div className="textBoxContainer">
-          {isEditing ?
+      <div className='settings' >
+      <div className="backButton" >
+        <BiChevronLeft size={20} />
+      </div>
+        <div className="messageTemplateContainer">
+            <div className='header'>Message Template</div>
             <textarea
               className='textBox'
               ref={inputRef}
-              onBlur={handleInputBlur}
               onChange={handleInputChange}
-              value={message}
+              value={template}
             />
-            : 
-
-          <div className='textBox' onClick={handleTextClick}> 
-              <p className='unselectable'>{message}</p>
-              <BsPencilFill className="editIcon" /> 
-          </div>
-          }
-          
+        </div>
+        <div className="dropDownContainer">
+            <div className='header'>Personalisation Type</div>
+            <Dropdown options={["aaa", "bbb"]}/>
         </div>
         <div className='buttonContainer'>
           <button  className="button copyButton" onClick={() => {handleCopyClick()}} >
-            {copied?  <BsFillClipboardCheckFill /> : <BsClipboard /> }
+            {saved?  <BiSolidSave/> : <BiSave/> }
           </button>
           <button className="button reloadButton" onClick={() => {handleReloadClick()}}>
-            <BsArrowRepeat/>  
-          </button> 
-          <button className="button settingsButton" onClick={() => {handleSettingsClick()}} >
-            <BsGear />  
+            Reset 
           </button> 
         </div>
       </div>

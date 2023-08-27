@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { iframeSliceType } from "../types"
 
 const initialState = {
-      width: "300px",
-      height: "225px",
+      width: "80px",
+      height: "50px",
   } as iframeSliceType
 
 export const iframeSlice = createSlice({

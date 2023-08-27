@@ -3,6 +3,7 @@ import { loadingSliceReducer } from './loadingSlice'
 import { loggedInSliceReducer } from './loggedInSlice'
 import { messageSliceReducer } from './messageSlice'
 import { iframeSliceReducer } from './iframeSlice'
+import { pagesSliceReducer } from './pagesSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     loggedIn: loggedInSliceReducer,
     message: messageSliceReducer,
     iframe: iframeSliceReducer,
+    pages: pagesSliceReducer,
   }
 })
 
