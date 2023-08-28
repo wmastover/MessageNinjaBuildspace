@@ -138,7 +138,10 @@
 .dropDownContainer {
   width: 100%;
   height: 150px;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Centers vertically */
+  justify-content: center;
 }
 
 .button {
@@ -166,6 +169,11 @@
   margin-right: 5px;
 }
 
+.resetButton {
+  font-size: 1.3rem;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 .settingsButton {
   font-size: 1.3rem;
   margin-left: 5px;
@@ -205,5 +213,60 @@
 }
 
 .backButton:hover {
+  color: #ffe600;
+}
+
+.selectBoxContainer {
+  width: 260px;
+  height: 40px; 
+}
+
+.selectBox {
+  width: 280px;
+  height: 40px; /* Typically, a dropdown/select box is not as tall as a textbox. Adjust this as needed. */
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background-color: #272727;
+  color: #E0E0E0;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0.5px solid #7f7f7f;
+  appearance: none; /* This removes the default style in some browsers */
+  padding-right: 25px; /* Space for the icon */
+  -webkit-appearance: none; /* Remove default appearance for select on some browsers */
+  -moz-appearance: none;
+}
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  color: #E0E0E0;
+}
+
+.dropdown-icon {
+
+  position: absolute;
+  right: 15px; /* Adjust based on your needs */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Make sure click events pass through the icon to the select element */
+}
+
+.selectBox:focus {
+  outline: none !important;
+
+}
+
+.selectBox:hover  {
+  color: #ffe600;
+  border: 0.5px solid #ffe600
+}
+
+
+.dropdown-container:hover {
+
   color: #ffe600;
 }

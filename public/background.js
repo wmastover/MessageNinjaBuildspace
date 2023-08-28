@@ -164,6 +164,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     storeVariable(request.key, request.value)
     console.log("store variable completed")
+
+    sendResponse({ success: true});
     return true;
 
   } else if (request.type == "getVariable") {

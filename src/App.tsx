@@ -12,6 +12,7 @@ import { changeTag } from './redux/pagesSlice';
 import { changeIframe } from './redux/iframeSlice';
 import { SettingsPage } from './components/settingsPage';
 import { Tag } from './components/tag';
+import { changeMessageParams } from './redux/messageParamsSlice';
 
 function App() {
   const [showUI, setShowUI] = useState<boolean>(true);
@@ -20,6 +21,7 @@ function App() {
   const loggedIn = useSelector((state: any) => state.loggedIn.value.loggedIn)
   const showTag = useSelector((state: any) => state.pages.value.showTag)
   const showSettings = useSelector((state: any) => state.pages.value.showSettings)
+  const template = useSelector((state: any) => state.messageParams.value.template)
 
   const dispatch = useDispatch();
 
@@ -107,24 +109,20 @@ function App() {
 
 
 
-      } else if (e.detail.data.action == "returnLoggedIn") {
-        console.log("app.tsx recieved this returnLoggedIn")
-        console.log(e.detail.data)
+      } else if (e.detail.data.action == "returnMessageParams") {
+        console.log("app.tsx recieved this returnMessageParams")
+        console.log(e.detail.data.payload)
 
-        
-
-        if (e.detail.data.payload == "success") {
-          console.log("loggedIn, setting loggedIn to true")
-          dispatch(changeLoggedIn({ loggedIn: true }));
-        } else if (e.detail.data.payload == "failed"){
-          console.log("not loggedIn, setting loggedIn to false")
-          dispatch(changeLoggedIn({ loggedIn: false }));
-        }
+        dispatch(changeMessageParams(e.detail.data.payload))
 
 
 
       } else if (e.detail.data.action == "returnQueryGPT") {
-        dispatch(changeMessage({message: e.detail.data.payload}))
+        let message1 = template.replace( "##PersonalisedIntro##" ,e.detail.data.payload) 
+
+
+        dispatch(changeMessage({message: message1}))
+        
         dispatch(changeLoading({loading: false}))
       } 
   };
@@ -132,7 +130,9 @@ function App() {
   window.addEventListener('contentScriptEvent', handleEvent as EventListener);
 
   return () => window.removeEventListener('contentScriptEvent', handleEvent as EventListener);
-}, [currentURL, loggedIn]);
+}, [currentURL, loggedIn, template]);
+
+
 
 
 

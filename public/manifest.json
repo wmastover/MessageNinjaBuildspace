@@ -21,7 +21,8 @@
         "initializeUI.js",
         "getProfileInfo.js",
         "sendGPTQuery.js",
-        "copyToClipboard.js"
+        "copyToClipboard.js",
+        "storeVariable.js"
         
         
       ],

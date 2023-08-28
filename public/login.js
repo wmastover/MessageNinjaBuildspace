@@ -45,17 +45,31 @@ type: "checkLogin"
 sendMessageToBackgroundScript(toSend).then((response) => {
     if (response.success) {
         
+      const toSend1 = {
+        type: "getVariable",
+        key: "messageParams"
+    
+        }
+
+      sendMessageToBackgroundScript(toSend1).then((response) => {
+        console.log("SAVED MESSAGE PARAMS")
+        console.log(response.value)
+      
+
         console.log("logged In")
         
-        // let messageData = {
-        //     action: "returnLoggedIn",
-        //     payload: "success"
-        //     };
+        let messageData1 = {
+            action: "returnMessageParams",
+            payload: response.value
+            };
 
-        // setTimeout(() => {
-        // const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData } });
-        // window.dispatchEvent(event);
-        // }, 2000);
+        setTimeout(() => {
+          const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData1 } });
+          window.dispatchEvent(event);
+          }, 2000);
+      
+      })
+       
 
     } else if (response.success == false) {
         console.log("not logged in")

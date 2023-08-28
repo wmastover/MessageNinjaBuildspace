@@ -58,8 +58,6 @@ export const CoreApp: React.FC = () => {
     }
     sendEvent(messageData)
     dispatch(changeMessage({ message: "loading" }));
-
-
   }
 
   const handleCopyClick = () => {
@@ -94,10 +92,18 @@ export const CoreApp: React.FC = () => {
             />
             : 
 
-          <div className='textBox' onClick={handleTextClick}> 
-              <p className='unselectable'>{message}</p>
-              <BsPencilFill className="editIcon" /> 
+            <div className='textBox' onClick={handleTextClick}> 
+            <div className='unselectable'>
+              {message.split('\n').map((line: string, index: number) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index !== message.split('\n').length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
+            <BsPencilFill className="editIcon" /> 
           </div>
+          
           }
           
         </div>

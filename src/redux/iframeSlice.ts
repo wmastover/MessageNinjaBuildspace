@@ -17,7 +17,7 @@ export const iframeSlice = createSlice({
     reducers: {
         changeIframe: (state, action) => {
             //can write non immutable logic in createSlice, exception to rule
-            console.log("change message", action.payload)
+            console.log("change iframe", action.payload)
             state.value =  action.payload
         },
     }

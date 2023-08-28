@@ -31,3 +31,7 @@ export type pagesSliceType = {
     showSettings: boolean
 }
 
+export type messageParamsSliceType = {
+    template: string;
+    personalisationType: string;
+}

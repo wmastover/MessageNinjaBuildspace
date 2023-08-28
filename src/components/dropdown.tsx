@@ -1,19 +1,21 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
+import { BiChevronDown } from 'react-icons/bi';
 
 interface DropdownProps {
   options: string[];
+  initialValue?: string;
+  selectedOption: string | null;
+  setSelectedOption: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ options }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-
+export const Dropdown: React.FC<DropdownProps> = ({ options, initialValue, selectedOption, setSelectedOption }) => {
   const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value);
   };
 
   return (
-    <div>
-      <select value={selectedOption || ''} onChange={handleDropdownChange}>
+    <div className="dropdown-container">
+      <select className="selectBox" value={selectedOption || ''} onChange={handleDropdownChange}>
         <option value="" disabled>Select an option</option>
         {options.map((option, index) => (
           <option key={index} value={option}>
@@ -21,8 +23,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ options }) => {
           </option>
         ))}
       </select>
-
-      {selectedOption && <div>You selected: {selectedOption}</div>}
+      <BiChevronDown className='dropdown-icon'/>
     </div>
   );
 };

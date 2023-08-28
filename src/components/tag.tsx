@@ -3,6 +3,7 @@ import { AiOutlineLoading3Quarters,  } from "react-icons/ai"
 import { MySvgIcon } from './svg';
 import { useSelector , useDispatch} from 'react-redux';
 import { changeLoading } from "../redux/loadingSlice"
+import { changeSettings } from '../redux/pagesSlice';
 
 
 interface TagProps {
@@ -17,7 +18,7 @@ export const Tag: React.FC<TagProps> = ({ onClickTag }) => {
  
 
   useEffect(() => {
-
+    dispatch(changeSettings(false))
 
   }, [isLoading])
 
