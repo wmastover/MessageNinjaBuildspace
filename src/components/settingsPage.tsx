@@ -109,7 +109,7 @@ I just started using Message Ninja, its a real game changer!`
           <div className='header'>Personalisation Type</div>
           <Dropdown 
             // options={["Automatic", "Work Experience Focus", "Focus on 'about' details"]} 
-            options={["Automatic",]} 
+            options={["Coming Soon...",]} 
             initialValue={personalisationType} 
             selectedOption={selectedOption} 
             setSelectedOption={setSelectedOption}
