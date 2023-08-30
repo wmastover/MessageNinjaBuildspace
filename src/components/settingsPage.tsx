@@ -54,7 +54,6 @@ export const SettingsPage: React.FC = () => {
       template: template,
       personalisationType: personalisationType,
     }));
-    window.alert("You may need to restart chrome for changes to take effect accross all tabs");
   };
 
   const handleResetClick = () => {

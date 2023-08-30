@@ -1,6 +1,6 @@
 console.log("loggin contentscript info initiated");
 
-
+//gets searches for and retrieves a login token from the page
 const getToken = (url, document) => {
     var returnToken = "no token";
   
@@ -35,34 +35,30 @@ function sendMessageToBackgroundScript(message) {
     });
   }
 
-//check if the user is logged in
+//check if the user is logged in automatically as soon as it runs
 
 const toSend = {
 type: "checkLogin"
 
 }
-
 sendMessageToBackgroundScript(toSend).then((response) => {
-    if (response.success) {
+    //checks if the user is logged in from the response of the background script
+    if (response.success == true) {
         
+      //message is sent to background script to get stored message params
       const toSend1 = {
         type: "getVariable",
         key: "messageParams"
     
         }
-
       sendMessageToBackgroundScript(toSend1).then((response) => {
-        console.log("SAVED MESSAGE PARAMS")
-        console.log(response.value)
-      
-
-        console.log("logged In")
         
         let messageData1 = {
             action: "returnMessageParams",
             payload: response.value
             };
-
+        
+        //wait 2 seconds to make sure UI has loaded then send these values back to the front end
         setTimeout(() => {
           const event = new CustomEvent('contentScriptEvent', { detail: { data: messageData1 } });
           window.dispatchEvent(event);
@@ -73,6 +69,7 @@ sendMessageToBackgroundScript(toSend).then((response) => {
 
     } else if (response.success == false) {
         console.log("not logged in")
+
         console.log(response)
         let messageData = {
           action: "returnLoggedIn",

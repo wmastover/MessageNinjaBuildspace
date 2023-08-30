@@ -90,20 +90,20 @@
 .textBox  {
   width: 260px;
   height: 135px;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin: 10px; /* Combine all margins into one shorthand */
   background-color: #272727;
   color: #E0E0E0;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   padding: 10px;
   border-radius: 5px;
-  border: 0.5px solid #7f7f7f;;
-  overflow: scroll
+  border: 0.5px solid #7f7f7f;
+  overflow: auto; /* Use 'auto' instead of 'scroll' for better user experience */
+  
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
 }
+
 
 .textBox:hover  {
   color: #ffe600;
@@ -191,7 +191,12 @@
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none;
+  max-height: 135px; /* Assuming you want to match the height of your textBox */
+  overflow-y: auto; /* Makes it scrollable vertically if the content overflows */
+  position: relative; /* To position the editIcon correctly */
 }
+
+
 
 .editIcon {
   position: absolute;

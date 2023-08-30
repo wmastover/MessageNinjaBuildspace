@@ -7,13 +7,14 @@ import { BsClipboard, BsFillClipboardCheckFill, BsGear, BsArrowRepeat, BsPencilF
 import { changeIframe } from '../redux/iframeSlice';
 import { changeSettings, changeTag } from '../redux/pagesSlice';
 import { sendEvent } from '../functions/sendEvent';
-
-
+import { AiOutlineLoading3Quarters,  } from "react-icons/ai"
+import { changeLoading } from '../redux/loadingSlice';
 
 export const CoreApp: React.FC = () => {
   // const [showCoreApp, setShowCoreApp] = useState(false);
   const message = useSelector((state: any) => state.message.value.message)
   const showTag = useSelector((state: any) => state.pages.value.showTag)
+  const isLoading = useSelector((state: any) => state.loading.value.loading); // assuming you have a combined reducer and `loading` is the key for this slice
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -21,7 +22,7 @@ export const CoreApp: React.FC = () => {
   const dispatch = useDispatch();
 
 
-  useEffect(() => {}, [message])
+  useEffect(() => {}, [message, isLoading])
 
   const handleSettingsClick = () => {
     dispatch(changeIframe({
@@ -54,10 +55,12 @@ export const CoreApp: React.FC = () => {
 
     const messageData = {
       action: "reloadMessage",
-      payload: "",
+      payload: message,
     }
     sendEvent(messageData)
-    dispatch(changeMessage({ message: "loading" }));
+    dispatch(changeLoading({loading: true}))
+    setCopied(false)
+   
   }
 
   const handleCopyClick = () => {
@@ -93,17 +96,22 @@ export const CoreApp: React.FC = () => {
             : 
 
             <div className='textBox' onClick={handleTextClick}> 
+            {isLoading?
+            <AiOutlineLoading3Quarters className='spinning' size={25}/>
+            :
+            <>
             <div className='unselectable'>
-              {message.split('\n').map((line: string, index: number) => (
-                <React.Fragment key={index}>
-                  {line}
-                  {index !== message.split('\n').length - 1 && <br />}
-                </React.Fragment>
-              ))}
+            {message.split('\n').map((line: string, index: number) => (
+              <React.Fragment key={index}>
+                {line}
+                {index !== message.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
+              </div>
+              <BsPencilFill className="editIcon" /> 
+            </>
+            } 
             </div>
-            <BsPencilFill className="editIcon" /> 
-          </div>
-          
           }
           
         </div>

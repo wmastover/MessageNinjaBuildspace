@@ -216,7 +216,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 } else if (request.type == "event") {
   // add document to firestore, in the users collection, document named after the user Id, in the events collection. 
   let eventDocument = {
-    profile: request.profile,
     message: request.message,
     eventType: request.eventType,
     timestamp: firebase.firestore.FieldValue.serverTimestamp() // Add timestamp if you want to keep track of when the event was logged

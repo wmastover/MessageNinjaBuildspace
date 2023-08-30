@@ -69,7 +69,14 @@ window.addEventListener('event', (e) => {
           }
       })
 
+      const toSendEvent = {
+        type: "event",
+        eventType: "reload",
+        message: e.detail.data.payload
+    
+        }
 
+      sendMessageToBackgroundScript(toSendEvent)
 
     }
 })
