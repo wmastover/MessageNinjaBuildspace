@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Message Ninja",
   "description": "Personalised messages in one click",
-  "version": "1.2.1",
+  "version": "0.0.2",
   "action": {
     "default_icon": {
       "16": "icon.png",
@@ -28,7 +28,8 @@
         "getProfileInfo.js",
         "sendGPTQuery.js",
         "copyToClipboard.js",
-        "storeVariable.js"
+        "storeVariable.js",
+        "tagClick.js"
         
         
       ],

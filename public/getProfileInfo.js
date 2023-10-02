@@ -122,14 +122,24 @@ const getPrompt =  (url, document) => {
             console.log("error with experience")
           }
         
-        const prompt = `
-  Create a succinct, personalized one-liner for the following LinkedIn user, using their profile information. The message should be a very short sentence and start with 'Hey **name**!'. Please reference a single detail from their profile information. Avoid controversial subjects and questions. Make sure to reference or comment on profile information, not just parrot it back. The reply should not contain any information about the sender.
+        const prompt = `I need you to create the first "intro" line of a personalized message.
+
+        The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
+        
+        The intro should start with 'Hey **name**!'
+        
+        The intro should only focus on a single detail from the given LinkedIn profile.
+        
+        Check these things before you reply:
+        
+        - Make sure it's a very short sentence.
+        - Make sure you have referenced or commented on a detail from the profile, not just repeated it.
+        - Make sure you avoid controversial subjects.
+        - Make sure you don't ask any questions.
+        - Triple-check that it makes sense.
+        `;
   
-  Above all the reply should make sense, read well and be as succinct as possible.
-  
-  Here is the JSON object containing the LinkedIn profile details:`
-  
-        query = prompt + `\n` + JSON.stringify(profileObject)
+        query = prompt + `\n\n` + JSON.stringify(profileObject)
         
         returnValue = {
           prompt: query,

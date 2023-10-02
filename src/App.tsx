@@ -33,17 +33,27 @@ function App() {
   //contains the template to use when displaying the message
   const template = useSelector((state: any) => state.messageParams.value.template)
 
+
+
   const dispatch = useDispatch();
 
 
   const handleTagClick = () => {
-    dispatch(changeIframe({
-      width: "300px",
-      height: "225px"
+    
+    const messageData = {
+      action: "tagClicked",
+      payload: ""
+    }
 
-    }))
-    // setShowCoreApp(!showCoreApp);
-    dispatch(changeTag(false)); // Set the state to show the core app
+    sendEvent(messageData)
+
+    // dispatch(changeIframe({
+    //   width: "300px",
+    //   height: "225px"
+
+    // }))
+
+    // dispatch(changeTag(false)); // Set the state to show the core app
   };
 
 
@@ -134,7 +144,8 @@ function App() {
           console.log("loggedIn should be set to true ")
           dispatch(changeLoggedIn({loggedIn: true}))
 
-          window.alert("Hello, Welcome, Howdy! You are loggedIn to message ninja, navigate to a linkedIn profile to start!")
+          // used to show alert here, this is handled by the webpage now
+          
 
         } else if ( e.detail.data.payload == "failed") {
           console.log("loggedIn should be set to false ")
@@ -154,7 +165,18 @@ function App() {
         let message1 = template.replace( "##PersonalisedIntro##" ,e.detail.data.payload) 
         dispatch(changeMessage({message: message1}))
         dispatch(changeLoading({loading: false}))
+
+      } else if (e.detail.data.action == "tagClickApproved") {
+        console.log("app.tsx recieved this tagClickApproved")
+        dispatch(changeIframe({
+          width: "300px",
+          height: "225px"
+        }))
+
+        dispatch(changeTag(false)); // Set the state to show the core app
+        
       } 
+
   };
 
   window.addEventListener('contentScriptEvent', handleEvent as EventListener);

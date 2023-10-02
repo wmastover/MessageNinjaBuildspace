@@ -1,3 +1,4 @@
+// Function to inject script into a tab
 function injectScript(tab) {
   // Avoid executing scripts on chrome:// URLs
   if (tab.url && tab.url.startsWith("chrome://")) {
@@ -12,7 +13,7 @@ function injectScript(tab) {
   });
 }
 
-// Listen for the creation of new tabs
+// Listen for the creation of new tabs and inject script
 chrome.tabs.onCreated.addListener(injectScript);
 
 
@@ -22,6 +23,7 @@ try {
   // you need to manually have firebase-compat.js file in your dir
 self.importScripts('./firebase-compat.js');
 
+// Firebase configuration details
 const firebaseConfig = {
   apiKey: "AIzaSyB78Wj5cPff9GdU7KPB7fXvI5NfA7BKDxI",
   authDomain: "messageninja-5f315.firebaseapp.com",
@@ -32,15 +34,19 @@ const firebaseConfig = {
   measurementId: "G-8SQ6MFBG7B"
 };
 
+// Initialize Firebase with the configuration
 firebase.initializeApp(firebaseConfig);
 
+// Create a Firestore database instance
 var db = firebase.firestore();
 
 } catch (e) {
+// Log any errors during initialization
 console.error(e);
 }
 
 
+// Function to store a variable in local storage
 function storeVariable(key, value) {
   chrome.storage.local.set({ [key]: value }, () => {
     console.log(`Value for '${key}' is set to '${value}'.`);
@@ -67,7 +73,7 @@ async function queryGPT3(queryGPTInput) {
   console.log(prompt);
 
   let messages = [
-    {"role": "system", "content": "You are a recruiter, that reads through linkedIn profiles and crafts custom messages"},
+    {"role": "system", "content":  "You are an messaging assistant, that writes highly personalised 'intro' lines for messages"},
     {"role": "user", "content": prompt},
   ]
 
@@ -201,7 +207,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (user) {
         console.log('User is signed in:', user);
         // User is signed in, perform some operations if you need
-        // ...
+        // Search Firestore for the document for that user
+        db.collection('users').doc(user.uid).get().then((doc) => {
+          if (doc.exists) {
+            // Check if the user has a credits value in the DB
+            if ('credits' in doc.data()) {
+              // Return the number of credits that user has
+              let credits = doc.data().credits;
+              storeVariable("credits", credits)
+              sendResponse({ success: true });
+            } else {
+              console.log('No credits value in the DB for this user, updating the user now');
+              console.log(doc.data())
+              // If no credits value in DB, add a credits value = to 20, and a paid value = to false this code is to handle legacy users
+              db.collection('users').doc(user.uid).set({
+                credits: 20,
+                paid: false
+              }, { merge: true });
+              storeVariable("credits", 20)
+              sendResponse({ success: true });
+            }
+          } else {
+            console.log('No such document!');
+            sendResponse({ success: false, message: 'No such document!' });
+          }
+        }).catch((error) => {
+          console.log('Error getting document:', error);
+          sendResponse({ success: false, message: error.message });
+        });
         sendResponse({ success: true })
       } else {
         console.log('No user is signed in.');
@@ -211,7 +244,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
     return true;
-  // ...
+
 
 } else if (request.type == "event") {
   // add document to firestore, in the users collection, document named after the user Id, in the events collection. 
@@ -235,6 +268,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   
   return true;
+} else if (request.type == "tagClicked"){
+
+  getVariable("credits", function(value) {
+    let credits = value;
+    if (credits > 0) {
+      sendResponse({ success: true });
+      credits--;
+      console.log(credits)
+      storeVariable("credits", credits);
+      let user = firebase.auth().currentUser;
+      if (user) {
+        db.collection('users').doc(user.uid).update({
+          credits: credits
+        })
+        .then(() => {
+          console.log("Credits updated successfully.");
+        })
+        .catch((error) => {
+          console.error("Error updating credits: ", error);
+        });
+      } else {
+        console.log("User not authenticated. Please authenticate before updating credits.");
+      }
+
+
+      
+      sendResponse({ success: true });
+    } else {
+      console.log("0 Credits left")
+      chrome.tabs.create({url: "https://credits.messageninja.ai/"});
+      sendResponse({ success: false })
+    }
+  });  
+  return true;
 }
 
 
@@ -244,27 +311,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
   
-
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    chrome.tabs.create({url: "https://app.messageninja.ai/"});
+  }
+});
 
 
   
-
-
-
-
-
-
-// background-script.js communicate with contentScript
-
-// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-//   // Check message action or any other property to determine the type of the message
-//   if (message.action === "event") {
-//       console.log("Received message from content script:", message.payload);
-
-//       // Send back a response
-//       sendResponse({ status: "success", data: "Your response data here" });
-//   }
-//   return true;  // This ensures the sendResponse can be called asynchronously
-// });
-
 
