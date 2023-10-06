@@ -9,7 +9,7 @@ import { changeSettings, changeTag } from '../redux/pagesSlice';
 import { sendEvent } from '../functions/sendEvent';
 import { Dropdown } from '../components/dropdown';
 import { changeMessageParams } from '../redux/messageParamsSlice';
-
+import { changeLoading } from '../redux/loadingSlice';
 export const SettingsPage: React.FC = () => {
   const initialTemplate = useSelector((state: any) => state.messageParams.value.template);
   const [template, setTemplate] = useState<string>(initialTemplate);
@@ -35,9 +35,21 @@ export const SettingsPage: React.FC = () => {
       height: "225px"
     }));
     dispatch(changeSettings(false));
+
+    const messageData = {
+      action: "getProfileInfo",
+      payload: ""
+    }
+    sendEvent(messageData)
+    dispatch(changeLoading({ loading: true }));
+
   };
 
   const handleSaveClick = () => {
+
+    console.log("saved clicked")
+    console.log(selectedOption)
+
     setSaved(true);
     const messageData = {
       action: "storeVariable",
@@ -45,14 +57,14 @@ export const SettingsPage: React.FC = () => {
         key: "messageParams",
         value: {
           template: template,
-          personalisationType: personalisationType,
+          personalisationType: selectedOption,
         }
       },
     };
     sendEvent(messageData);
     dispatch(changeMessageParams({
       template: template,
-      personalisationType: personalisationType,
+      personalisationType: selectedOption,
     }));
   };
 
@@ -108,8 +120,8 @@ I just started using Message Ninja, its a real game changer!`
         <div className="dropDownContainer">
           <div className='header'>Personalisation Type</div>
           <Dropdown 
-            // options={["Automatic", "Work Experience Focus", "Focus on 'about' details"]} 
-            options={["Coming Soon...",]} 
+            options={["Automatic", "Experience focus",]} 
+            // options={["Coming Soon...",]} 
             initialValue={personalisationType} 
             selectedOption={selectedOption} 
             setSelectedOption={setSelectedOption}
@@ -127,3 +139,4 @@ I just started using Message Ninja, its a real game changer!`
     </>
   );
 };
+

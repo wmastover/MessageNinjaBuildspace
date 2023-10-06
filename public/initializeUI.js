@@ -1,34 +1,3 @@
-//use to send data to background script
-
-
-// function sendMessageToBackgroundScript(data) {
-//   chrome.runtime.sendMessage(data, function(response) {
-//       console.log("Received response from background:", response);
-//   });
-// }
-
-
-//use to send data to app.tsx
-
-// window.addEventListener('event', (e) => {
-//   console.log("Event from app.tsx was registered n the content script");
-//   console.log(e.detail.data.action);
-
-//   if (e.detail.data.action == "getA") {
-//     console.log("= to getURL")
-//     console.log(window.location.href)
-
-//     let messageData = {
-//       action: "returnURL",
-//       payload: window.location.href
-//     };
-  
-//     const event = new CustomEvent('contentScriptEvent', {detail: {data: messageData}});
-//     window.dispatchEvent(event);
-
-//   }
-// });
-
 
 //adds app to the webpage
 console.log("initialiseUI run")
