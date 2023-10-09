@@ -5,8 +5,17 @@ import { messageParamsSliceType } from "../types"
 const initialState = {
     template: `##PersonalisedIntro##
 
-I just started using Message Ninja, its a real game changer!`,
-    personalisationType: "Automatic",
+    Customise this text in settings!`,
+
+    personalisationType: "Experience focus",
+    linkedInProfile: {
+        userName: "",
+        userDescription: "",
+        aboutDescripton: "",
+        experience: [],
+        activity: [],
+      }
+
 
 } as messageParamsSliceType
 

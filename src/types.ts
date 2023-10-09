@@ -31,7 +31,19 @@ export type pagesSliceType = {
     showSettings: boolean
 }
 
+
+export type LinkedInProfileType = {
+    userName: string;
+    userDescription: string;
+    aboutDescripton: string;
+    experience: any[]; // You can replace 'any' with a specific type if needed
+    activity: any[]; // You can replace 'any' with a specific type if needed
+}
+
 export type messageParamsSliceType = {
     template: string;
     personalisationType: string;
+    linkedInProfile?: LinkedInProfileType;
 }
+
+

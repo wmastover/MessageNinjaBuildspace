@@ -36,6 +36,7 @@ function App() {
   //contains the template to use when displaying the message
   const template = useSelector((state: any) => state.messageParams.value.template)
   const personalisationType = useSelector((state: any) => state.messageParams.value.personalisationType)
+  const senderslinkedInProfile = useSelector((state: any) => state.messageParams.value.linkedInProfile)
   const [paramsReturned, setParamsReturned] = useState<boolean>(false);
 
   const dispatch = useDispatch();
@@ -131,14 +132,39 @@ function App() {
         console.log("app.tsx recieved this returnProfileInfo")
         const linkedInProfile = e.detail.data.payload.profile
 
-        if (e.detail.data.payload.saveProfile === true) (
+        if (e.detail.data.payload.saveProfile === true) {
           console.log("save profile to state, then to message params")
-        )
+
+          const messageData = {
+            action: "storeVariable",
+            payload: {
+              key: "messageParams",
+              value: {
+                template: template,
+                personalisationType: personalisationType,
+                linkedInProfile: e.detail.data.payload.profile
+              }
+            },
+          };
+          sendEvent(messageData);
+          dispatch(changeMessageParams({
+            template: template,
+            personalisationType: personalisationType,
+            linkedInProfile: e.detail.data.payload.profile
+          }));
+      }
 
         console.log(personalisationType)
         console.log(template)
 
-        const query = generateQuery(linkedInProfile, personalisationType)
+        const generateQueryInput = {
+          sendersProfile: senderslinkedInProfile,
+          receiversProfile: linkedInProfile,
+          personalisationType: personalisationType
+        }
+
+        const query = generateQuery(generateQueryInput)
+
         // send event to run gpt query from background.jjs
         const messageData = {
           action: "queryGPT",
@@ -193,6 +219,7 @@ function App() {
         let cleanedText = e.detail.data.payload.replace(/"/g, '')
 
         let message1 = template.replace( "##PersonalisedIntro##" ,cleanedText) 
+
         dispatch(changeMessage({message: message1}))
         dispatch(changeLoading({loading: false}))
 

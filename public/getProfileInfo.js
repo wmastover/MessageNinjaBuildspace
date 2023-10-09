@@ -14,7 +14,6 @@ const getPrompt =  (url, document) => {
       saveProfile: null,
 
     }
-  
       
       if (url.includes("www.linkedin.com/in")) {
   

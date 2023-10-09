@@ -17,7 +17,8 @@ export const SettingsPage: React.FC = () => {
   const personalisationType = useSelector((state: any) => state.messageParams.value.personalisationType);
   const [selectedOption, setSelectedOption] = useState<string | null>(personalisationType);
 
-  const [saved, setSaved] = useState<boolean>(false);
+  const sendersProfile = useSelector((state: any) => state.messageParams.value.linkedInProfile);
+
 
   const dispatch = useDispatch();
 
@@ -29,7 +30,10 @@ export const SettingsPage: React.FC = () => {
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+
+
   const handleBackClick = () => {
+    handleSaveClick()
     dispatch(changeIframe({
       width: "300px",
       height: "225px"
@@ -50,7 +54,6 @@ export const SettingsPage: React.FC = () => {
     console.log("saved clicked")
     console.log(selectedOption)
 
-    setSaved(true);
     const messageData = {
       action: "storeVariable",
       payload: {
@@ -58,6 +61,7 @@ export const SettingsPage: React.FC = () => {
         value: {
           template: template,
           personalisationType: selectedOption,
+          linkedInProfile: sendersProfile
         }
       },
     };
@@ -65,15 +69,16 @@ export const SettingsPage: React.FC = () => {
     dispatch(changeMessageParams({
       template: template,
       personalisationType: selectedOption,
+      linkedInProfile: sendersProfile
     }));
   };
 
   const handleResetClick = () => {
     const resetTemplate = `##PersonalisedIntro##
     
-I just started using Message Ninja, its a real game changer!`
+Customise this text in settings!`
 
-    const resetSelectedOption = "Automatic"
+    const resetSelectedOption = "Experience focus"
 
 
     setTemplate(resetTemplate);
@@ -102,6 +107,10 @@ I just started using Message Ninja, its a real game changer!`
     inputRef.current?.focus();
   }, []);
 
+  useEffect(() => {
+    handleSaveClick();
+  }, [selectedOption, template]);
+
   return (
     <>
       <div className='settings'>
@@ -113,23 +122,30 @@ I just started using Message Ninja, its a real game changer!`
           <textarea
             className='textBox'
             ref={inputRef}
-            onChange={handleInputChange}
+            
+            onChange={(change) => {
+              handleInputChange(change);
+            }}
+
             value={template}
           />
         </div>
         <div className="dropDownContainer">
           <div className='header'>Personalisation Type</div>
           <Dropdown 
-            options={["Automatic", "Experience focus", "Activity focus", "Find common ground"]} 
+            // options={["Experience focus", "Activity focus","Automatic",  "Beta - suggest common ground"]}
+            options={["Experience focus", "Activity focus",]}  
             initialValue={personalisationType} 
             selectedOption={selectedOption} 
-            setSelectedOption={setSelectedOption}
+            setSelectedOption={(option) => {
+              setSelectedOption(option);
+            }}
           />
         </div>
         <div className='buttonContainer'>
-          <button className="button copyButton" onClick={handleSaveClick}>
+          {/* <button className="button copyButton" onClick={handleSaveClick}>
             {saved ? <BiSolidSave/> : <BiSave/>}
-          </button>
+          </button> */}
           <button className="button resetButton" onClick={handleResetClick}>
             Reset 
           </button> 
