@@ -73,7 +73,7 @@ async function queryGPT3(queryGPTInput) {
   console.log(prompt);
 
   let messages = [
-    {"role": "system", "content":  "You are an messaging assistant, that writes highly personalised 'intro' lines for messages"},
+    {"role": "system", "content":  "You are an messaging assistant, that writes highly personalised 'intro' lines for messages. You can only respond with a short sentance. You cannot use emojis, quotation marks or hashtags."},
     {"role": "user", "content": prompt},
   ]
 

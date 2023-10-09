@@ -11,6 +11,8 @@ const getPrompt =  (url, document) => {
     let returnValue = {
       prompt: null,
       profile: null,
+      saveProfile: null,
+
     }
   
       
@@ -23,6 +25,7 @@ const getPrompt =  (url, document) => {
             userDescription: "",
             aboutDescripton: "",
             experience: [],
+            activity: [],
           }
         }
   
@@ -121,6 +124,62 @@ const getPrompt =  (url, document) => {
           } catch(err) {
             console.log("error with experience")
           }
+
+          try{
+            const activityPanel = document.getElementById("content_collections")
+    
+            const activityPanelParent= activityPanel.parentElement
+    
+            const activityPanelItems = activityPanelParent.getElementsByClassName("profile-creator-shared-feed-update__mini-container")
+            
+            console.log("activity panel items length:")
+            console.log(activityPanelItems.length)
+            
+            let itterations = 0
+            if (activityPanelItems) {
+              if (activityPanelItems.length > 3) {
+                itterations = 3
+              } else {
+                itterations = activityPanelItems.length
+              }
+              for (let i = 0; i < itterations; i++) {
+                console.log(i)
+
+                const activityPanelItem = activityPanelItems[i]
+
+                const array = activityPanelItem.querySelectorAll('a')
+    
+                let activity = `\n `
+                
+                
+                for (let i = 0; i < array.length; i++) {
+                  let activityText = array[i].getAttribute('aria-label');
+                  if (activityText) {
+                    activityText = activityText.replace("View full post.", "");
+                    activity += ` ${activityText} \n`
+                  }
+                }
+            
+                if (activity) {
+                  profileObject.linkedInProfile.activity.push(activity)
+                }
+        
+
+              }
+            }
+    
+            
+            // queryText+= `
+            
+            // \n About: ${aboutText}\n `
+            
+    
+            } catch(err) {
+              console.log("error with activity panel")
+              console.log(err)
+            }
+
+
         
         const prompt = `I need you to create the first "intro" line of a personalized message.
 
@@ -143,7 +202,8 @@ const getPrompt =  (url, document) => {
         
         returnValue = {
           prompt: query,
-          profile: profileObject
+          profile: profileObject,
+          saveProfile: url === "https://www.linkedin.com/in/me/" ? true : false
         }
   
 
@@ -156,6 +216,7 @@ const getPrompt =  (url, document) => {
             userDescription: "",
             aboutDescripton: "",
             experience: [],
+            activity: [],
           }
         }
   
@@ -244,7 +305,57 @@ const getPrompt =  (url, document) => {
           } catch(err) {
             console.log("error with experience")
           }
-        
+
+
+          try{
+            const activityPanel = document.getElementById("relationship-section")
+  
+            const activityPanelItems = activityPanel.getElementsByClassName("_recent-activities-item_7c496i")
+
+            // article-text_ulix4y
+  
+            let itterations = 0
+
+            if (activityPanelItems) {
+              if (activityPanelItems.length > 3) {
+                itterations = 3
+              } else {
+                itterations = activityPanelItems.length
+              }
+              for (let i = 0; i < itterations; i++) {
+              
+                const activityPanelItem = activityPanelItems[i]
+             
+                const activityTypeElement = activityPanelItem.querySelector('h4');
+                let activityType = activityTypeElement ? activityTypeElement.textContent : "";
+                activityType = activityType.replace(" shared", " posted");
+                activityType = activityType.replace("reshared", "shared");
+
+
+                const activityTimeElement = activityPanelItem.querySelector('time');
+                const activityTime = activityTimeElement ? activityTimeElement.textContent : "";
+
+                const activityContentElement = activityPanelItem.querySelector('._article-text_ulix4y');
+                const activityContent = activityContentElement ? activityContentElement.textContent : "";
+                
+                const activity = {
+                  activityType: activityType.trim(),
+                  activityTime: activityTime.trim(),
+                  activityContent: activityContent.trim(),
+                };
+
+                if (activity) {
+                  profileObject.linkedInProfile.activity.push(activity)
+                }
+                // queryText+= `
+                // \n Experience: ${experience}\n `
+              }
+            }
+          } catch(err) {
+            console.log("error with activity")
+          }
+
+
         const prompt = `I need you to create the first "intro" line of a personalized message.
 
         The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
@@ -264,9 +375,11 @@ const getPrompt =  (url, document) => {
   
         query = prompt + `\n\n` + JSON.stringify(profileObject)
         
+        
         returnValue = {
           prompt: query,
-          profile: profileObject
+          profile: profileObject,
+          saveProfile: false
         }
   
       } else {
@@ -274,7 +387,8 @@ const getPrompt =  (url, document) => {
         
         returnValue = {
           prompt: query,
-          profile: null
+          profile: null,
+          saveProfile: false,
         }
         
       }

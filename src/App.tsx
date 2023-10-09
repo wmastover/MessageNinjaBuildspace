@@ -131,14 +131,18 @@ function App() {
         console.log("app.tsx recieved this returnProfileInfo")
         const linkedInProfile = e.detail.data.payload.profile
 
+        if (e.detail.data.payload.saveProfile === true) (
+          console.log("save profile to state, then to message params")
+        )
+
         console.log(personalisationType)
         console.log(template)
 
-        console.log(generateQuery(linkedInProfile, personalisationType))
+        const query = generateQuery(linkedInProfile, personalisationType)
         // send event to run gpt query from background.jjs
         const messageData = {
           action: "queryGPT",
-          payload: e.detail.data.payload.prompt,
+          payload: query,
         }
         sendEvent(messageData)
 
@@ -186,7 +190,9 @@ function App() {
 
 
         //code to fit message into the template
-        let message1 = template.replace( "##PersonalisedIntro##" ,e.detail.data.payload) 
+        let cleanedText = e.detail.data.payload.replace(/"/g, '')
+
+        let message1 = template.replace( "##PersonalisedIntro##" ,cleanedText) 
         dispatch(changeMessage({message: message1}))
         dispatch(changeLoading({loading: false}))
 
@@ -207,7 +213,7 @@ function App() {
 
   // this apparently stops memory leak
   return () => window.removeEventListener('contentScriptEvent', handleEvent as EventListener);
-}, [currentURL, loggedIn, template, paramsReturned]);
+}, [currentURL, loggedIn, template, paramsReturned, personalisationType, template]);
 
 
   return (
