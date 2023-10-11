@@ -55,7 +55,7 @@ function MainComponent() {
     borderStyle: 'none',
     position: 'fixed',
     right: '0',
-    top: '50px',
+    top: '120px',
     width: iframeWidth,
     height: iframeHeight,
     zIndex: 999999
@@ -68,7 +68,7 @@ function MainComponent() {
       borderStyle: 'none',
       position: 'fixed',
       right: '0',
-      top: '50px',
+      top: '120px',
       width: iframeWidth,
       height: iframeHeight,
       zIndex: 999999

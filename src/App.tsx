@@ -72,7 +72,7 @@ function App() {
               // resize iframe, then show tag for loading
               dispatch(changeIframe({
                 width: "80px",
-                height: "50px",
+                height: "80px",
           
               }))
               setShowUI(true)

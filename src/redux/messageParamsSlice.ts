@@ -5,7 +5,7 @@ import { messageParamsSliceType } from "../types"
 const initialState = {
     template: `##PersonalisedIntro##
 
-    Customise this text in settings!`,
+Customise this text in settings!`,
 
     personalisationType: "Experience focus",
     linkedInProfile: {

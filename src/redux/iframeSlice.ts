@@ -4,7 +4,7 @@ import { iframeSliceType } from "../types"
 
 const initialState = {
       width: "80px",
-      height: "50px",
+      height: "80px",
   } as iframeSliceType
 
 export const iframeSlice = createSlice({
