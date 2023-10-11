@@ -35,8 +35,8 @@ export const SettingsPage: React.FC = () => {
   const handleBackClick = () => {
     handleSaveClick()
     dispatch(changeIframe({
-      width: "300px",
-      height: "225px"
+      width: "400px",
+      height: "400px"
     }));
     dispatch(changeSettings(false));
 
@@ -115,12 +115,12 @@ Customise this text in settings!`
     <>
       <div className='settings'>
         <div className="backButton">
-          <BiChevronLeft size={20} onClick={handleBackClick}/>
+          <BiChevronLeft size={20} className='dashIcon' onClick={handleBackClick}/>
         </div>
         <div className="messageTemplateContainer">
           <div className='header'>Message Template</div>
           <textarea
-            className='textBox'
+            className='textBoxSettings'
             ref={inputRef}
             
             onChange={(change) => {

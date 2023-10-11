@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { messageSliceType } from "../types"
 
-const initialState = {message: "true"} as messageSliceType
+const initialState = {message: ""} as messageSliceType
 
 export const messageSlice = createSlice({
 

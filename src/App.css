@@ -2,29 +2,6 @@
 
 
 
-.Tag {
-  text-align: center;
-  align-items: center;
-  font-size: larger;
-  background-color: #ffe600;
-  width: 70px;
-  height: 35px;
-  position: fixed;
-  top: 5px;
-  right: 0;
-  border-top-left-radius: 30px; /* Adjust the radius value as needed */
-  border-bottom-left-radius: 30px; 
-  border-left: 3px solid black;
-  border-top: 3px solid black;
-  border-bottom: 3px solid black;
-  
-}
-
-.Tag:hover {
-  background-color: #ddc704;
-}
-
-
 /* body, html,iframe {
   overflow: hidden;
   width: 300px !important;
@@ -63,8 +40,9 @@
 }
 
 .app {
-  width: 300px;
-  height: 225px;
+  top: 100px;
+  width: 400px;
+  height: 300px;
   background-color: #1E1E1E ;
   display: flex;
   flex-direction: column;
@@ -76,7 +54,7 @@
 
 
 .settings {
-  width: 300px;
+  width: 400px;
   height: 400px;
   background-color: #1E1E1E ;
   display: flex;
@@ -88,22 +66,47 @@
 
 
 .textBox  {
-  width: 260px;
-  height: 135px;
-  margin: 10px; /* Combine all margins into one shorthand */
+  width: 330px;
+  height: 200px;
+  margin: 20px 10px;
+  padding: 10px 25px;
+  background-color: #272727;
+  color: #E0E0E0;
+  text-align: center;
+  border-radius: 5px;
+  border: 0.5px solid #7f7f7f;
+  overflow: auto;
+  justify-content: center;
+}
+
+.textBoxContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+.textBoxSettings  {
+  width: 360px;
+  height: 150px;
+  margin-top: 20px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
   background-color: #272727;
   color: #E0E0E0;
   text-align: center;
   padding: 10px;
   border-radius: 5px;
   border: 0.5px solid #7f7f7f;
-  overflow: auto; /* Use 'auto' instead of 'scroll' for better user experience */
-  
+  max-height: 150px; /* Assuming you want to match the height of your textBox */
+  overflow-y: auto; 
   display: flex; /* Use flexbox */
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
 }
-
 
 .textBox:hover  {
   color: #ffe600;
@@ -118,14 +121,14 @@
 
 .buttonContainer {
   width: 100%;
-  height: 50px;
+  height: 70px;
   display: flex;
   flex-direction: row;
 }
 
 .textBoxContainer {
   width: 100%;
-  height: 175px;
+  height: 250px;
 
 }
 
@@ -191,8 +194,7 @@
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none;
-  max-height: 135px; /* Assuming you want to match the height of your textBox */
-  overflow-y: auto; /* Makes it scrollable vertically if the content overflows */
+/* Makes it scrollable vertically if the content overflows */
   position: relative; /* To position the editIcon correctly */
 }
 
@@ -200,7 +202,7 @@
 
 .editIcon {
   position: absolute;
-  top: 15px;    /* Adjust as necessary */
+  top: 110px;    /* Adjust as necessary */
   right: 15px;  /* Adjust as necessary */
   cursor: pointer; /* Make it look clickable */
   z-index: 2;  /* Make sure it appears above other content */
@@ -272,6 +274,36 @@
 
 
 .dropdown-container:hover {
-
   color: #ffe600;
+}
+
+
+.dashIcon {
+  position: absolute;
+  top: 84px;
+  left: 7px;
+  color: #E0E0E0;
+  font-size: 20px; /* Change the font size */
+}
+
+.messageCounter {
+  position: absolute;
+  top: 84px;
+  right: 8px;
+  color: #E0E0E0;
+  font-size: 15px; /* Change the font size */
+}
+.dashIcon:hover {
+  color: #ffe600;
+}
+
+.chevronIcon {
+  font-size: 30px;
+  color: #E0E0E0
+  
+}
+
+.chevronIcon:hover {
+  color: #ffe600;
+  
 }

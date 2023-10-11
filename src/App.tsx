@@ -226,8 +226,8 @@ function App() {
       } else if (e.detail.data.action == "tagClickApproved") {
         console.log("app.tsx recieved this tagClickApproved")
         dispatch(changeIframe({
-          width: "300px",
-          height: "225px"
+          width: "400px",
+          height: "400px"
         }))
 
         dispatch(changeTag(false)); // Set the state to show the core app
@@ -249,8 +249,9 @@ function App() {
     <>
       {showUI ?
       <>
+      <Tag onClickTag={() => {handleTagClick()}}/> 
         {showTag? 
-          <Tag onClickTag={() => {handleTagClick()}}/> 
+          <></>
           : 
           <>
           {showSettings? <SettingsPage/> : <CoreApp/>}
