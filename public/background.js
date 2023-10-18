@@ -1,3 +1,7 @@
+
+
+
+
 // Function to inject script into a tab
 function injectScript(tab) {
   // Avoid executing scripts on chrome:// URLs
@@ -59,10 +63,39 @@ function getVariable(key, callback) {
     callback(result[key]);
   });
 }
+
+function sendEventToFirestore(request) {
+  let eventDocument = {
+    message: request.message,
+    eventType: request.eventType,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Add timestamp if you want to keep track of when the event was logged
+  };
+
+  let user = firebase.auth().currentUser;
+  if (user) { // Check if user is authenticated before trying to add data to Firestore
+    db.collection('users').doc(user.uid).collection('events').add(eventDocument)
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+  } else {
+    console.log("User not authenticated. Please authenticate before logging events.");
+  }
+}
+
+// Add a listener that runs a function when the chrome extension is uninstalled
+chrome.runtime.setUninstallURL('http://goodbye.messageninja.ai/', function() {
+  console.log('Uninstall URL set');
+  
+  // Function to send an event to Firestore
+  sendEventToFirestore({message: 'Extension uninstalled', eventType: 'uninstall'});
+
+});
+
   
 const firebaseFunctions = firebase.functions();
-
-
 
 //talks to firebase function 
 async function queryGPT3(queryGPTInput) {
@@ -247,25 +280,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 } else if (request.type == "event") {
-  // add document to firestore, in the users collection, document named after the user Id, in the events collection. 
-  let eventDocument = {
-    message: request.message,
-    eventType: request.eventType,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Add timestamp if you want to keep track of when the event was logged
-  };
-
-  let user = firebase.auth().currentUser;
-  if (user) { // Check if user is authenticated before trying to add data to Firestore
-    db.collection('users').doc(user.uid).collection('events').add(eventDocument)
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
-  } else {
-    console.log("User not authenticated. Please authenticate before logging events.");
-  }
+ 
+  sendEventToFirestore(request)
   
   return true;
 } else if (request.type == "tagClicked"){

@@ -115,7 +115,7 @@ Customise this text in settings!`
     <>
       <div className='settings'>
         <div className="backButton">
-          <BiChevronLeft size={20} className='dashIcon' onClick={handleBackClick}/>
+          <BiChevronLeft size={20} className='' onClick={handleBackClick}/>
         </div>
         <div className="messageTemplateContainer">
           <div className='header'>Message Template</div>

@@ -212,7 +212,7 @@
 
 .backButton {
   position: absolute;
-  top: 10px;
+  top: 90px;
   left: 10px;
   cursor: pointer;
   color: #E0E0E0; /* Change the color if needed */
@@ -298,7 +298,7 @@
 }
 
 .chevronIcon {
-  font-size: 30px;
+  font-size: 20px;
   color: #E0E0E0
   
 }
