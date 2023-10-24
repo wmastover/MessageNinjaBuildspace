@@ -15,6 +15,7 @@ export const CoreApp: React.FC = () => {
   // const [showCoreApp, setShowCoreApp] = useState(false);
   const [messageArray, setMessageArray] = useState<string[]>([]);
   const [counterText, setCounterText] = useState<string>("");
+  const [isUserEdited, setIsUserEdited] = useState<boolean>(false);
 
   const message = useSelector((state: any) => state.message.value.message)
   const showTag = useSelector((state: any) => state.pages.value.showTag)
@@ -27,13 +28,13 @@ export const CoreApp: React.FC = () => {
 
 
   useEffect(() => {
-    if (message !== "" && !messageArray.includes(message)) {
+    if (message !== "" && !messageArray.includes(message) && !isUserEdited) {
       setMessageArray([...messageArray, message]);
       setCounterText(`${messageArray.length + 1} of ${messageArray.length + 1 }`);
     }
-    
+  }, [message, isLoading, isUserEdited]) // Add isUserEdited as a dependency
 
-  }, [message, isLoading])
+  
 
   const handleSettingsClick = () => {
     dispatch(changeIframe({
@@ -48,10 +49,12 @@ export const CoreApp: React.FC = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(changeMessage({ message: event.target.value }));
+    setIsUserEdited(true); // Set isUserEdited to true when user starts editing
   };
 
   const handleInputBlur = () => {
     setIsEditing(false);
+    setIsUserEdited(false); // Set isUserEdited back to false when user finishes editing
   };
 
   const inputRef = useRef<HTMLTextAreaElement>(null);

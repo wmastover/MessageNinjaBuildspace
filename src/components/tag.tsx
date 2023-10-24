@@ -15,8 +15,10 @@ export const Tag: React.FC<TagProps> = ({ onClickTag }) => {
   const isLoading = useSelector((state: any) => state.loading.value.loading); // assuming you have a combined reducer and `loading` is the key for this slice
   const dispatch = useDispatch();
 
- 
+  
 
+
+  // no idea why this is here, should be redudant, **** test this ****
   useEffect(() => {
     dispatch(changeSettings(false))
 

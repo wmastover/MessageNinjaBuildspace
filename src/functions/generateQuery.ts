@@ -122,7 +122,7 @@ Check these things before you reply:
         const returnDetails = {linkedInProfile: {
             userName: profileData.linkedInProfile.userName,
             userDescription: profileData.linkedInProfile.userDescription,
-            activity: profileData.linkedInProfile.activity
+            posts: profileData.linkedInProfile.posts
         }}
 
 

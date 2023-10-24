@@ -13,7 +13,7 @@ Customise this text in settings!`,
         userDescription: "",
         aboutDescripton: "",
         experience: [],
-        activity: [],
+        posts: [],
       }
 
 

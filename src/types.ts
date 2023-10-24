@@ -37,7 +37,7 @@ export type LinkedInProfileType = {
     userDescription: string;
     aboutDescripton: string;
     experience: any[]; // You can replace 'any' with a specific type if needed
-    activity: any[]; // You can replace 'any' with a specific type if needed
+    posts: any[]; // You can replace 'any' with a specific type if needed
 }
 
 export type messageParamsSliceType = {

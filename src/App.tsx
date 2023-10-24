@@ -8,12 +8,13 @@ import { useSelector , useDispatch} from 'react-redux';
 import { changeLoggedIn } from './redux/loggedInSlice';
 import { changeMessage } from './redux/messageSlice';
 import { changeLoading } from './redux/loadingSlice';
-import { changeTag } from './redux/pagesSlice';
+import { changeTag, changeSettings } from './redux/pagesSlice';
 import { changeIframe } from './redux/iframeSlice';
 import { SettingsPage } from './components/settingsPage';
 import { Tag } from './components/tag';
 import { changeMessageParams } from './redux/messageParamsSlice';
 import { generateQuery } from './functions/generateQuery'
+import { returnTopics} from './functions/returnTopics'
 
 function App() {
   //toggle for showing or hiding the UI
@@ -24,8 +25,6 @@ function App() {
 
   //contains the current url, updates sent each second from the content script
   const [currentURL, setCurrentURL] = useState<string>("none");
-
-
 
   //defaults to true, changes if the check comes back failed, shows login page if not logged in
   const loggedIn = useSelector((state: any) => state.loggedIn.value.loggedIn)
@@ -105,6 +104,7 @@ function App() {
           
               }))
               setShowUI(false)
+              dispatch(changeSettings(false));
             }
             setCurrentURL(e.detail.data.payload)
             dispatch(changeLoading({ loading: true }));
@@ -131,6 +131,7 @@ function App() {
       } else if (e.detail.data.action == "returnProfileInfo") {
         console.log("app.tsx recieved this returnProfileInfo")
         const linkedInProfile = e.detail.data.payload.profile
+        returnTopics(linkedInProfile.linkedInProfile)
 
         if (e.detail.data.payload.saveProfile === true) {
           console.log("save profile to state, then to message params")
@@ -225,12 +226,28 @@ function App() {
 
       } else if (e.detail.data.action == "tagClickApproved") {
         console.log("app.tsx recieved this tagClickApproved")
-        dispatch(changeIframe({
-          width: "400px",
-          height: "400px"
-        }))
+        console.log("showTag: ", showTag)
+        
+        if (showTag) {
+          dispatch(changeIframe({
+            width: "400px",
+            height: "400px"
+          }))
 
-        dispatch(changeTag(false)); // Set the state to show the core app
+          dispatch(changeTag(false)); // Set the state to show the core app
+
+        } else if (!showTag){
+
+          dispatch(changeIframe({
+            width: "80px",
+            height: "80px",
+          }))
+
+          dispatch(changeTag(true));
+          dispatch(changeSettings(false));
+
+
+        }
         
       } 
 
@@ -240,7 +257,7 @@ function App() {
 
   // this apparently stops memory leak
   return () => window.removeEventListener('contentScriptEvent', handleEvent as EventListener);
-}, [currentURL, loggedIn, template, paramsReturned, personalisationType, template]);
+}, [currentURL, loggedIn, template, paramsReturned, personalisationType, template, showTag]);
 
 
   return (
