@@ -1,6 +1,8 @@
 import { LinkedInProfileType } from '../types';
 
 export function returnTopics(linkedInProfile: LinkedInProfileType) {
+
+    console.log("return topics recieved: ", linkedInProfile)
     
     type returnItem = {
         type: string,
@@ -11,6 +13,7 @@ export function returnTopics(linkedInProfile: LinkedInProfileType) {
     let returnItems: returnItem[] = [];
 
   if (linkedInProfile.posts) {
+       
         for (let i = 0; i < linkedInProfile.posts.length; i++) {
 
             const postText = linkedInProfile.posts[i].postText.replace(/\n/g, " ").replace(/Image/g, "").replace(/\s+/g, ' ').trim()

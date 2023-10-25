@@ -39,7 +39,8 @@ const getPrompt = (url, document) => {
         name = nameElement[0].textContent.split(" ")[0]
       }
 
-      const userDescriptionElement = leftPanel?.getElementsByTagName("div")[1]
+      const userDescriptionElement = leftPanel?.children[1]
+
       if (userDescriptionElement && userDescriptionElement.length > 0) {
         userDescription = userDescriptionElement.textContent
       }
@@ -68,16 +69,11 @@ const getPrompt = (url, document) => {
 
       const aboutTextItems = aboutPanel2.getElementsByTagName("span")[0]
 
-
       const aboutText = aboutTextItems.textContent
 
       if (aboutText) {
         profileObject.linkedInProfile.aboutDescripton = aboutText
       }
-      // queryText+= `
-
-      // \n About: ${aboutText}\n `
-
 
     } catch (err) {
       console.log("error with about")
@@ -101,81 +97,141 @@ const getPrompt = (url, document) => {
         }
         for (let i = 0; i < itterations; i++) {
 
-
           const experiencePanelItem = experiencePanelItems[i]
+          
           const array = experiencePanelItem.querySelectorAll('span[aria-hidden="true"]')
 
-          try {
-            const jobTitle = array[0].textContent
+          //if true, run scaper for wierd experience section (multiple jobs at one company)
+          if (experiencePanelItem.querySelector('ul.pvs-list')) {
+              console.log("multiple jobs under one company detected")
+              try {
+                  const companyName = array[0]?.textContent
+                  console.log(companyName);
 
-            const companyName = array[1].textContent.split("·")[0]
+                  const jobRoot = experiencePanelItem.querySelector('li')
+                  const jobRootChildElements = jobRoot.querySelectorAll('span[aria-hidden="true"]')
+                  jobRootChildElements.forEach((element, index) => {
+                      console.log(`Element ${index}: ${element.textContent}`);
+                  });
 
-            var currentlyDoingThisJob = null
+                  const jobTitle = jobRootChildElements[0]?.textContent
+                  console.log(jobTitle);
 
-            let timeInJob = array[2].textContent.split("·")[1]
+                  let timeInJob = jobRootChildElements[1]?.textContent?.split("·")[1]
+                  console.log(timeInJob);
+                  
+                  if (timeInJob?.includes("mos")) {
+                    timeInJob = timeInJob.replace("mos", "months")
+                  } else if (timeInJob?.includes("mo")) {
+                    timeInJob = timeInJob.replace("mo", "month")
+                  }
+                  if (timeInJob?.includes("yrs")) {
+                    timeInJob = timeInJob.replace("yrs", "years")
+                  } else if (timeInJob?.includes("yr")) {
+                    timeInJob = timeInJob.replace("yr", "year")
+                  }
 
-            //change abreviations so they never come up in final message
-            if (timeInJob.includes("mos")) {
-              timeInJob = timeInJob.replace("mos", "months")
-            } else if (timeInJob.includes("mo")) {
-              timeInJob = timeInJob.replace("mo", "month")
+                  let currentlyDoingThisJob = null
+
+                  if (jobRootChildElements[1]?.textContent?.includes("Present")) {
+                    currentlyDoingThisJob = true
+                  } else {
+                    currentlyDoingThisJob = false
+                  }
+
+                  const otherJobNotes = "they were promoted internally to this role"
+
+                  let job = {
+                    jobTitle: jobTitle,
+                    companyName: companyName,
+                    currentlyDoingThisJob: currentlyDoingThisJob,
+                    timeInJob: timeInJob,
+                    otherJobNotes: otherJobNotes
+                  }
+      
+                  if (job) {
+                    profileObject.linkedInProfile.experience.push(job)
+                  }
+              } catch (err) {
+                  console.log("Error while processing job details (multiple jobs under one company): ", err);
+              }
+          } else {
+
+            try {
+              const jobTitle = array[0].textContent
+  
+              const companyName = array[1].textContent.split("·")[0]
+  
+              let currentlyDoingThisJob = null
+  
+              let timeInJob = array[2].textContent.split("·")[1]
+  
+              //change abreviations so they never come up in final message
+              if (timeInJob.includes("mos")) {
+                timeInJob = timeInJob.replace("mos", "months")
+              } else if (timeInJob.includes("mo")) {
+                timeInJob = timeInJob.replace("mo", "month")
+              }
+              if (timeInJob.includes("yrs")) {
+                timeInJob = timeInJob.replace("yrs", "years")
+              } else if (timeInJob.includes("yr")) {
+                timeInJob = timeInJob.replace("yr", "year")
+              }
+  
+  
+              if (array[2].textContent.includes("Present")) {
+                currentlyDoingThisJob = true
+              } else {
+                currentlyDoingThisJob = false
+              }
+  
+  
+              //add optional(on linkedIn) fields to "otherJobNotes"
+              let otherJobNotes = ""
+              for (let i = 3; i < array.length; i++) {
+                let clonedSpan = array[i].cloneNode(true)
+  
+                //replace breaks with spaces in HTML, to stop it concatinating random words together
+                clonedSpan.innerHTML = clonedSpan.innerHTML.replace(/<br\s*\/?>/g, ' ')
+                otherJobNotes += ` ${clonedSpan.textContent} \n`
+              }
+  
+              let job = {
+                jobTitle: jobTitle,
+                companyName: companyName,
+                currentlyDoingThisJob: currentlyDoingThisJob,
+                timeInJob: timeInJob,
+                otherJobNotes: otherJobNotes
+              }
+  
+              if (job) {
+                profileObject.linkedInProfile.experience.push(job)
+              }
+  
+            } catch (err) {
+              console.log("error scraping specific job")
+  
+              let otherJobNotes = ""
+              for (let i = 0; i < array.length; i++) {
+                let clonedSpan = array[i].cloneNode(true)
+  
+                //replace breaks with spaces in HTML, to stop it concatinating random words together
+                clonedSpan.innerHTML = clonedSpan.innerHTML.replace(/<br\s*\/?>/g, ' ')
+                otherJobNotes += ` ${clonedSpan.textContent} \n`
+              }
+  
+              job = {
+                otherJobNotes: otherJobNotes
+              }
+  
+              if (job) {
+                profileObject.linkedInProfile.experience.push(job)
+              }
             }
-            if (timeInJob.includes("yrs")) {
-              timeInJob = timeInJob.replace("yrs", "years")
-            } else if (timeInJob.includes("yr")) {
-              timeInJob = timeInJob.replace("yr", "year")
-            }
 
-
-            if (array[2].textContent.includes("Present")) {
-              currentlyDoingThisJob = true
-            } else {
-              currentlyDoingThisJob = false
-            }
-
-
-            //add optional(on linkedIn) fields to "otherJobNotes"
-            let otherJobNotes = ""
-            for (let i = 3; i < array.length; i++) {
-              let clonedSpan = array[i].cloneNode(true)
-
-              //replace breaks with spaces in HTML, to stop it concatinating random words together
-              clonedSpan.innerHTML = clonedSpan.innerHTML.replace(/<br\s*\/?>/g, ' ')
-              otherJobNotes += ` ${clonedSpan.textContent} \n`
-            }
-
-            let job = {
-              jobTitle: jobTitle,
-              companyName: companyName,
-              currentlyDoingThisJob: currentlyDoingThisJob,
-              timeInJob: timeInJob,
-              otherJobNotes: otherJobNotes
-            }
-
-            if (job) {
-              profileObject.linkedInProfile.experience.push(job)
-            }
-
-          } catch (err) {
-            console.log("error scraping specific job likely due to multiple jobs under one company")
-
-            let otherJobNotes = ""
-            for (let i = 0; i < array.length; i++) {
-              let clonedSpan = array[i].cloneNode(true)
-
-              //replace breaks with spaces in HTML, to stop it concatinating random words together
-              clonedSpan.innerHTML = clonedSpan.innerHTML.replace(/<br\s*\/?>/g, ' ')
-              otherJobNotes += ` ${clonedSpan.textContent} \n`
-            }
-
-            job = {
-              otherJobNotes: otherJobNotes
-            }
-
-            if (job) {
-              profileObject.linkedInProfile.experience.push(job)
-            }
           }
+
+          
         }
       }
     } catch (err) {
@@ -188,9 +244,6 @@ const getPrompt = (url, document) => {
       const activityPanelParent = activityPanel.parentElement
 
       const activityPanelItems = activityPanelParent.getElementsByClassName("profile-creator-shared-feed-update__mini-container")
-
-      console.log("activity panel items length:")
-      console.log(activityPanelItems.length)
 
       let itterations = 0
       if (activityPanelItems && activityPanelItems.length > 0) {
@@ -318,7 +371,7 @@ const getPrompt = (url, document) => {
         userDescription: "",
         aboutDescripton: "",
         experience: [],
-        activity: [],
+        posts: [],
       }
     }
 
@@ -382,59 +435,135 @@ const getPrompt = (url, document) => {
           itterations = experiencePanelItems.length
         }
         for (let i = 0; i < itterations; i++) {
-          try {
-            const experiencePanelItem = experiencePanelItems[i]
 
-            const jobTitleElement = experiencePanelItem.querySelector('[data-anonymize="job-title"]');
-            const jobTitle = jobTitleElement ? jobTitleElement.textContent.trim() : "";
+        // Can check for Ul with classname _positions-list_1irc72 ( only occurs with multiple jobs under one company)
 
-            const parentElement = jobTitleElement ? jobTitleElement.parentElement : null;
 
-            const companyName = parentElement ? parentElement.querySelector('p')?.textContent.trim() : null;
 
-            //get tiime in Job
-            const secondPElement = parentElement ? parentElement.querySelectorAll('p')[1] : null;
-            const secondPElementText = secondPElement ? secondPElement?.textContent.trim() : null;
-            const spanElementText = secondPElement ? secondPElement.querySelector('span')?.textContent.trim() : null;
+       
+          const experiencePanelItem = experiencePanelItems[i]
 
-            let timeInJob = secondPElementText ? secondPElementText.replace(spanElementText, "").trim() : 'null'
+          if (experiencePanelItem.querySelector('ul._positions-list_1irc72')) {
+            console.log("multiple jobs under one company detected")
+            try {
+              const companyName = experiencePanelItem ? experiencePanelItem.querySelector('[data-anonymize="company-name"]')?.textContent.trim() : null;
+              console.log("company Name:", companyName)
 
-            if (timeInJob.includes("mos")) {
-              timeInJob = timeInJob.replace("mos", "months")
-            } else if (timeInJob.includes("mo")) {
-              timeInJob = timeInJob.replace("mo", "month")
+              //get first job title
+              const jobTitleElement = experiencePanelItem.querySelector('[data-anonymize="job-title"]');
+              const jobTitle = jobTitleElement ? jobTitleElement.textContent.trim() : "";
+              console.log("jobtitle:", jobTitle)
+
+              // Find an element with the class '_position-time-period-range_1irc72' under 'experiencePanelItem'
+              const timePeriodElement = experiencePanelItem.querySelector('._position-time-period-range_1irc72');
+              let timePeriod = timePeriodElement? timePeriodElement.textContent : null;
+
+              console.log("timePeriodElement:", timePeriod)
+              
+              const timeInJobElement = timePeriodElement? timePeriodElement.parentElement : null;
+              let timeInJob = timeInJobElement? timeInJobElement.textContent : null;
+              timeInJob = timeInJob.replace(timePeriod, "").trim()
+              console.log("timeInJobElement:", timeInJob)
+
+              if (timeInJob.includes("mos")) {
+                  timeInJob = timeInJob.replace("mos", "months")
+                } else if (timeInJob.includes("mo")) {
+                  timeInJob = timeInJob.replace("mo", "month")
+                }
+                if (timeInJob.includes("yrs")) {
+                  timeInJob = timeInJob.replace("yrs", "years")
+                } else if (timeInJob.includes("yr")) {
+                  timeInJob = timeInJob.replace("yr", "year")
+                }
+                // currently doing job
+                let currentlyDoingThisJob = null
+  
+              if (timePeriod.includes("Present")) {
+                  currentlyDoingThisJob = true
+                } else {
+                  currentlyDoingThisJob = false
+                }
+
+              const otherJobNotes = "they were promoted internally to this role"
+              
+              let job = {
+                jobTitle: jobTitle,
+                companyName: companyName,
+                currentlyDoingThisJob: currentlyDoingThisJob,
+                timeInJob: timeInJob,
+                otherJobNotes: otherJobNotes
+              }
+
+              if (job) {
+                profileObject.linkedInProfile.experience.push(job)
+              }            
+            } catch (err) {
+                console.log("Error while processing job details (multiple jobs under one company): ", err);
             }
-            if (timeInJob.includes("yrs")) {
-              timeInJob = timeInJob.replace("yrs", "years")
-            } else if (timeInJob.includes("yr")) {
-              timeInJob = timeInJob.replace("yr", "year")
-            }
-            // currently doing job
-            let currentlyDoingThisJob = null
 
-            if (secondPElementText.includes("Present")) {
-              currentlyDoingThisJob = true
-            } else {
-              currentlyDoingThisJob = false
-            }
 
-            const jobDescriptionElement = experiencePanelItem.querySelector('[data-anonymize="person-blurb"]');
-            const jobDescription = jobDescriptionElement ? jobDescriptionElement.textContent : "";
+          } else {
+            try {
+              const companyName = experiencePanelItem ? experiencePanelItem.querySelector('[data-anonymize="company-name"]')?.textContent.trim() : null;
+              console.log("company Name:", companyName)
 
-            let job = {
-              jobTitle: jobTitle,
-              companyName: companyName,
-              currentlyDoingThisJob: currentlyDoingThisJob,
-              timeInJob: timeInJob,
-              otherJobNotes: jobDescription
-            }
+              const jobTitleElement = experiencePanelItem.querySelector('[data-anonymize="job-title"]');
+              const jobTitle = jobTitleElement ? jobTitleElement.textContent.trim() : "";
+              console.log("jobtitle:", jobTitle)
 
-            if (job) {
-              profileObject.linkedInProfile.experience.push(job)
+              const parentElement = jobTitleElement ? jobTitleElement.parentElement : null;
+
+              
+              // Find an element with the class '_position-time-period-range_1irc72' under 'experiencePanelItem'
+              const timePeriodElement = experiencePanelItem.querySelector('._position-time-period-range_1irc72');
+              let timePeriod = timePeriodElement? timePeriodElement.textContent : null;
+
+              console.log("timePeriodElement:", timePeriod)
+              
+              const timeInJobElement = timePeriodElement? timePeriodElement.parentElement : null;
+              let timeInJob = timeInJobElement? timeInJobElement.textContent : null;
+              timeInJob = timeInJob.replace(timePeriod, "").trim()
+              console.log("timeInJobElement:", timeInJob)
+
+              if (timeInJob.includes("mos")) {
+                  timeInJob = timeInJob.replace("mos", "months")
+                } else if (timeInJob.includes("mo")) {
+                  timeInJob = timeInJob.replace("mo", "month")
+                }
+                if (timeInJob.includes("yrs")) {
+                  timeInJob = timeInJob.replace("yrs", "years")
+                } else if (timeInJob.includes("yr")) {
+                  timeInJob = timeInJob.replace("yr", "year")
+                }
+                // currently doing job
+                let currentlyDoingThisJob = null
+  
+              if (timePeriod.includes("Present")) {
+                  currentlyDoingThisJob = true
+                } else {
+                  currentlyDoingThisJob = false
+                }
+
+              const jobDescriptionElement = experiencePanelItem.querySelector('[data-anonymize="person-blurb"]');
+              const jobDescription = jobDescriptionElement ? jobDescriptionElement.textContent : "";
+
+              let job = {
+                jobTitle: jobTitle,
+                companyName: companyName,
+                currentlyDoingThisJob: currentlyDoingThisJob,
+                timeInJob: timeInJob,
+                otherJobNotes: jobDescription
+              }
+
+              if (job) {
+                profileObject.linkedInProfile.experience.push(job)
+              }
+            } catch (err) {
+              console.log("Error in experience iteration: ", i, err);
             }
-          } catch (err) {
-            console.log("Error in experience iteration: ", i, err);
           }
+
+            
         }
       }
     } catch (err) {

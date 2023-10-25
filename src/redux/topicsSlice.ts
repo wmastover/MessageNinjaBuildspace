@@ -15,7 +15,7 @@ export const topicsSlice = createSlice({
     reducers: {
         changeTopics: (state, action) => {
             //can write non immutable logic in createSlice, exception to rule
-            console.log("change message", action.payload)
+            console.log("change topics", action.payload)
             state.value =  action.payload
         },
     }
