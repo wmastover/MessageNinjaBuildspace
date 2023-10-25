@@ -36,7 +36,7 @@ export const SettingsPage: React.FC = () => {
     handleSaveClick()
     dispatch(changeIframe({
       width: "400px",
-      height: "400px"
+      height: "610px"
     }));
     dispatch(changeSettings(false));
 

@@ -47,3 +47,8 @@ export type messageParamsSliceType = {
 }
 
 
+export type topicType = {
+    type: string;
+    tagline: string;
+    details: any;
+}

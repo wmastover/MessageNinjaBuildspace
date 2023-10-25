@@ -20,6 +20,7 @@ export const CoreApp: React.FC = () => {
   const message = useSelector((state: any) => state.message.value.message)
   const showTag = useSelector((state: any) => state.pages.value.showTag)
   const isLoading = useSelector((state: any) => state.loading.value.loading); // assuming you have a combined reducer and `loading` is the key for this slice
+  const topics = useSelector((state: any) => state.topics.value)
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -32,7 +33,7 @@ export const CoreApp: React.FC = () => {
       setMessageArray([...messageArray, message]);
       setCounterText(`${messageArray.length + 1} of ${messageArray.length + 1 }`);
     }
-  }, [message, isLoading, isUserEdited]) // Add isUserEdited as a dependency
+  }, [message, isLoading, isUserEdited, topics]) // Add isUserEdited as a dependency
 
   
 
@@ -182,6 +183,18 @@ export const CoreApp: React.FC = () => {
           <button className="button settingsButton" onClick={() => {handleSettingsClick()}} >
             <BsGear />  
           </button> 
+        </div>
+        <div className='topicsContainer'>
+          <span className="topicHeader" >👇 Focus on another topic 👇</span>
+          <button  className="button topicButtonTop" onClick={() => {}} >
+            {topics[1]? topics[1].tagline : "No topic found 😭"}
+          </button>
+          <button  className="button topicButtonMiddle" onClick={() => {}} >
+            {topics[2]? topics[2].tagline : "No topic found 😭"}
+          </button>
+          <button  className="button topicButtonBottom" onClick={() => {}} >
+          {topics[3]? topics[3].tagline : "No topic found 😭"}
+          </button>
         </div>
       </div>
     </>

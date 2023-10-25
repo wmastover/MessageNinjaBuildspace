@@ -15,6 +15,7 @@ import { Tag } from './components/tag';
 import { changeMessageParams } from './redux/messageParamsSlice';
 import { generateQuery } from './functions/generateQuery'
 import { returnTopics} from './functions/returnTopics'
+import { changeTopics } from './redux/topicsSlice';
 
 function App() {
   //toggle for showing or hiding the UI
@@ -131,7 +132,7 @@ function App() {
       } else if (e.detail.data.action == "returnProfileInfo") {
         console.log("app.tsx recieved this returnProfileInfo")
         const linkedInProfile = e.detail.data.payload.profile
-        returnTopics(linkedInProfile.linkedInProfile)
+        dispatch(changeTopics(returnTopics(linkedInProfile.linkedInProfile)))
 
         if (e.detail.data.payload.saveProfile === true) {
           console.log("save profile to state, then to message params")
@@ -231,7 +232,7 @@ function App() {
         if (showTag) {
           dispatch(changeIframe({
             width: "400px",
-            height: "400px"
+            height: "610px"
           }))
 
           dispatch(changeTag(false)); // Set the state to show the core app
