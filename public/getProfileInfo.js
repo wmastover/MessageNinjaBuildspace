@@ -1,6 +1,28 @@
 console.log("get profile info initiated");
 
 // used to get the prompt to send to openAI from a url and the content
+
+const processTimeInJob = (timeInJob) => {
+  if (timeInJob.includes("mos")) {
+    timeInJob = timeInJob.replace("mos", "months")
+  } else if (timeInJob.includes("mo")) {
+    timeInJob = timeInJob.replace("mo", "month")
+  }
+  if (timeInJob.includes("yrs")) {
+    timeInJob = timeInJob.replace("yrs", "years")
+    const index = timeInJob.indexOf("years");
+    timeInJob = timeInJob.substring(0, index + 5);
+  } else if (timeInJob.includes("yr")) {
+    timeInJob = timeInJob.replace("yr", "year")
+    const index = timeInJob.indexOf("year");
+    timeInJob = timeInJob.substring(0, index + 4);
+  }
+  return timeInJob;
+}
+
+
+
+
 const getPrompt = (url, document) => {
 
 
@@ -123,22 +145,11 @@ const getPrompt = (url, document) => {
                    
                   } else {
                     timeInJobLine = jobRootChildElements[2]?.textContent
-                    timeInJob = jobRootChildElements[2]?.textContent?.split("·")[1]
+                    timeInJob = jobRootChildElements[2]?.textContent?.split("·")[1].trim()
                     
                   }
 
-                  
-                  
-                  if (timeInJob?.includes("mos")) {
-                    timeInJob = timeInJob.replace("mos", "months")
-                  } else if (timeInJob?.includes("mo")) {
-                    timeInJob = timeInJob.replace("mo", "month")
-                  }
-                  if (timeInJob?.includes("yrs")) {
-                    timeInJob = timeInJob.replace("yrs", "years")
-                  } else if (timeInJob?.includes("yr")) {
-                    timeInJob = timeInJob.replace("yr", "year")
-                  }
+                  timeInJob = processTimeInJob(timeInJob);
 
                   let currentlyDoingThisJob = null
 
@@ -175,20 +186,10 @@ const getPrompt = (url, document) => {
   
               let currentlyDoingThisJob = null
   
-              let timeInJob = array[2].textContent.split("·")[1]
+              let timeInJob = array[2].textContent.split("·")[1].trim()
               
   
-              //change abreviations so they never come up in final message
-              if (timeInJob.includes("mos")) {
-                timeInJob = timeInJob.replace("mos", "months")
-              } else if (timeInJob.includes("mo")) {
-                timeInJob = timeInJob.replace("mo", "month")
-              }
-              if (timeInJob.includes("yrs")) {
-                timeInJob = timeInJob.replace("yrs", "years")
-              } else if (timeInJob.includes("yr")) {
-                timeInJob = timeInJob.replace("yr", "year")
-              }
+              timeInJob = processTimeInJob(timeInJob);
   
   
               if (array[2].textContent.includes("Present")) {
@@ -392,7 +393,7 @@ const getPrompt = (url, document) => {
       // const nameElement = leftPanel?.getElementsByTagName("h1");
       const nameElement = document.querySelector('[data-anonymize="person-name"]');
       if (nameElement) {
-        name = nameElement.textContent
+        name = nameElement.textContent.trim()
       }
 
       const userDescriptionElement = document.querySelector('[data-anonymize="headline"]');
@@ -401,7 +402,7 @@ const getPrompt = (url, document) => {
       }
 
       if (name) {
-        profileObject.linkedInProfile.userName = name.trim().split(" ")[0]
+        profileObject.linkedInProfile.userName = name.split(" ")[0]
       }
       if (userDescription) {
         profileObject.linkedInProfile.userDescription = userDescription.trim()
@@ -471,16 +472,7 @@ const getPrompt = (url, document) => {
               timeInJob = timeInJob.replace(timePeriod, "").trim()
               
 
-              if (timeInJob.includes("mos")) {
-                  timeInJob = timeInJob.replace("mos", "months")
-                } else if (timeInJob.includes("mo")) {
-                  timeInJob = timeInJob.replace("mo", "month")
-                }
-                if (timeInJob.includes("yrs")) {
-                  timeInJob = timeInJob.replace("yrs", "years")
-                } else if (timeInJob.includes("yr")) {
-                  timeInJob = timeInJob.replace("yr", "year")
-                }
+              timeInJob = processTimeInJob(timeInJob);
                 // currently doing job
                 let currentlyDoingThisJob = null
   
@@ -525,16 +517,7 @@ const getPrompt = (url, document) => {
               timeInJob = timeInJob.replace(timePeriod, "").trim()
 
 
-              if (timeInJob.includes("mos")) {
-                  timeInJob = timeInJob.replace("mos", "months")
-                } else if (timeInJob.includes("mo")) {
-                  timeInJob = timeInJob.replace("mo", "month")
-                }
-                if (timeInJob.includes("yrs")) {
-                  timeInJob = timeInJob.replace("yrs", "years")
-                } else if (timeInJob.includes("yr")) {
-                  timeInJob = timeInJob.replace("yr", "year")
-                }
+              timeInJob = processTimeInJob(timeInJob);
                 // currently doing job
                 let currentlyDoingThisJob = null
   
@@ -631,7 +614,7 @@ const getPrompt = (url, document) => {
                 let post = {
                   postAge: postAge.trim(),
                   postType: postType.trim(),
-                  postText: activityContent.trim()
+                  postText: activityContent.trim().replace()
                 }
 
                 if (post) {

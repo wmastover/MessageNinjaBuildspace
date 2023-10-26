@@ -70,14 +70,15 @@ Check these things before you reply:
             The intro should only focus on a single detail about the job experience listed in the LinkedIn profile.
             
             Use one of the following templates to craft your response:
-            
-            Only use this if timeInJob is less than 6 months - "Hey **first name**, congrats on the new role as **job title** at **company** " 
-            
-            Only use this if timeInJob is less more than 1 year - "Hey **first name**, congrats on **rounded number of years** at **current company**"
-            
-            "Hey **first name**, your experience at **company** caught my attention"
-            
+
             "Hey **first name**, I just came accross your profile and **detail** caught my attention"
+
+            "Hey **first name**, I'm keen to learn more about your role at **company**"
+
+            "Hey **first name**, I noticed your experience in **detail**"
+            
+            "Hey **first name**, I noticed you have been at **company** for **timeInJob**" 
+            
             
             Check these things before you reply:
             
@@ -148,9 +149,9 @@ The intro should comment on something the user has posted or reposted, based on 
 
 Use one of the following templates to craft your response:
 
-For "shared" posts, use this template: "Hey **first name**, the post you shared about **detail** caught my attention"
+"Hey **first name**, the post you shared about **detail** caught my attention"
 
-For "posted" posts, use this template: "Hey **first name**, the I just read the post you wrote about **detail**"
+"Hey **first name**, the I just read the post you wrote about **detail**"
 
 Check these things before you reply:
 
