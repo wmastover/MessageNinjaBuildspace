@@ -1,6 +1,6 @@
 import './App.css'
 import { useEffect, useState} from 'react';
-import { AnotherCustomEventData } from "./types"
+import { AnotherCustomEventData, topicType } from "./types"
 import { CoreApp } from './components/coreApp';
 import {LoginPage} from './components/logInPage'
 import { sendEvent } from './functions/sendEvent';
@@ -16,6 +16,7 @@ import { changeMessageParams } from './redux/messageParamsSlice';
 import { generateQuery } from './functions/generateQuery'
 import { returnTopics} from './functions/returnTopics'
 import { changeTopics } from './redux/topicsSlice';
+import { changeLinkedInProfile } from './redux/linkedInProfileSlice';
 
 function App() {
   //toggle for showing or hiding the UI
@@ -131,8 +132,10 @@ function App() {
 
       } else if (e.detail.data.action == "returnProfileInfo") {
         console.log("app.tsx recieved this returnProfileInfo")
-        const linkedInProfile = e.detail.data.payload.profile
-        dispatch(changeTopics(returnTopics(linkedInProfile.linkedInProfile)))
+        const linkedInProfile = e.detail.data.payload.profile.linkedInProfile
+       
+        const topics = returnTopics(linkedInProfile)
+        dispatch(changeTopics(topics))
 
         if (e.detail.data.payload.saveProfile === true) {
           console.log("save profile to state, then to message params")
@@ -144,7 +147,7 @@ function App() {
               value: {
                 template: template,
                 personalisationType: personalisationType,
-                linkedInProfile: e.detail.data.payload.profile
+                linkedInProfile: linkedInProfile
               }
             },
           };
@@ -152,7 +155,7 @@ function App() {
           dispatch(changeMessageParams({
             template: template,
             personalisationType: personalisationType,
-            linkedInProfile: e.detail.data.payload.profile
+            linkedInProfile: linkedInProfile
           }));
       }
 
@@ -162,7 +165,7 @@ function App() {
         const generateQueryInput = {
           sendersProfile: senderslinkedInProfile,
           receiversProfile: linkedInProfile,
-          personalisationType: personalisationType
+          topic: topics[0]
         }
 
         const query = generateQuery(generateQueryInput)
@@ -173,6 +176,7 @@ function App() {
           payload: query,
         }
         sendEvent(messageData)
+        dispatch(changeLinkedInProfile(linkedInProfile))
 
       } else if (e.detail.data.action == "returnMessageParams") {
         console.log("app.tsx recieved this returnMessageParams")

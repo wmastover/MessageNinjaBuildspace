@@ -6,6 +6,7 @@ import { iframeSliceReducer } from './iframeSlice'
 import { pagesSliceReducer } from './pagesSlice'
 import { messageParamsSliceReducer } from './messageParamsSlice'
 import { topicsSliceReducer } from './topicsSlice'
+import { linkedInProfileSlice, linkedInProfileSliceReducer } from './linkedInProfileSlice'
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     iframe: iframeSliceReducer,
     pages: pagesSliceReducer,
     messageParams: messageParamsSliceReducer,
-    topics: topicsSliceReducer
+    topics: topicsSliceReducer,
+    linkedInProfile: linkedInProfileSliceReducer
   }
 })
 

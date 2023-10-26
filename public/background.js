@@ -134,7 +134,7 @@ async function reloadQueryGPT() {
   console.log(messages);
 
   if (messages) {
-    messages.push({"role": "user", "content": "Try again, focus on another interesting detail"});
+    messages.push({"role": "user", "content": "Try again, use another template, do not repeat messages"});
   } else {
     messages = [];
   }

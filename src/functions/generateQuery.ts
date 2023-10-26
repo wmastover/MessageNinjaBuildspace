@@ -1,14 +1,11 @@
-import { LinkedInProfileType } from '../types';
+import { LinkedInProfileType, topicType } from '../types';
 
 
-type ProfileData = {
-    linkedInProfile: LinkedInProfileType
-}
 
 type GenerateQueryInputType= {
     sendersProfile: LinkedInProfileType,
-    receiversProfile: ProfileData,
-    personalisationType: string
+    receiversProfile: LinkedInProfileType,
+    topic: topicType
 }
 
 
@@ -16,15 +13,15 @@ export function generateQuery(GenerateQueryInput: GenerateQueryInputType) {
     console.log("linkedIn profile")
 
     console.log("generateQuery Running - ")
-    console.log(GenerateQueryInput.personalisationType)
+    console.log(GenerateQueryInput.topic)
     console.log(GenerateQueryInput.sendersProfile)
     console.log(GenerateQueryInput.receiversProfile)
 
-    const personalisationType = GenerateQueryInput.personalisationType
+    const topic = GenerateQueryInput.topic
     const profileData = GenerateQueryInput.receiversProfile
     const usersProfileData = GenerateQueryInput.sendersProfile
 
-    if (personalisationType === "Automatic") {
+    if (topic.type === "Automatic") {
         let promptText = `I need you to create the first "intro" line of a personalized message.
 
 The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
@@ -59,44 +56,88 @@ Check these things before you reply:
 
     } 
     
-    else if (personalisationType === "Experience focus") {
-        let promptText = `I need you to create the first "intro" line of a personalized message.
+    else if (topic.type === "Job") {
 
-The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
+        if (topic.details.currentlyDoingThisJob) {
+            //current job
 
-The intro should start with 'Hey **first name**!'
+            let promptText = `I need you to create the first "intro" line of a personalized message.
 
-The intro should only focus on a single detail about the job experience listed in the LinkedIn profile.
+            The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
+            
+            The intro should start with 'Hey **first name**!'
+            
+            The intro should only focus on a single detail about the job experience listed in the LinkedIn profile.
+            
+            Use one of the following templates to craft your response:
+            
+            Only use this if timeInJob is less than 6 months - "Hey **first name**, congrats on the new role as **job title** at **company** " 
+            
+            Only use this if timeInJob is less more than 1 year - "Hey **first name**, congrats on **rounded number of years** at **current company**"
+            
+            "Hey **first name**, your experience at **company** caught my attention"
+            
+            "Hey **first name**, I just came accross your profile and **detail** caught my attention"
+            
+            Check these things before you reply:
+            
+            - Make sure it's a very short sentence.
+            - Make sure you have referenced or commented on a detail from the profile, not just repeated it.
+            - Make sure you avoid controversial subjects.
+            - Make sure you don't ask any questions.
+            - Triple-check that it makes sense.
+            `;
+            const returnDetails = {linkedInProfile: {
+                userName: profileData.userName,
+                userDescription: profileData.userDescription,
+                experience: topic.details
+            }}
+    
+    
+            const query = promptText + `\n\n` + JSON.stringify(returnDetails)
+            return query
 
-Use one of the following templates to craft your response:
 
-"Hey **first name**, your experience at **company** caught my attention"
+        } else {
+            let promptText = `I need you to create the first "intro" line of a personalized message.
 
-"Hey **first name**, congrats on **number of years** at **most recent company**"
+            The intro should be succinct, but obviously personalized using the LinkedIn profile information provided.
+            
+            The intro should start with 'Hey **first name**!'
+            
+            The intro should only focus on a single detail about the old job experience listed in the LinkedIn profile (they are not currently working the job mentioned).
+            
+            Use one of the following templates to craft your response:
+            
+            "Hey **first name**, I just came accross your profile and **detail** caught my attention"
 
-"Hey **first name**, im reaching out because I saw your experience in **job**"
+            "Hey **first name**, I'm interested to hear about your time at **company**"
 
-"Hey **first name**, I just came accross your profile and **detail** caught my attention"
+            "Hey **first name**, I saw that you used to work as **job title** at **company**"
+            
+            Check these things before you reply:
+            
+            - Make sure it's a very short sentence.
+            - Make sure you have referenced or commented on a detail from the profile, not just repeated it.
+            - Make sure you avoid controversial subjects.
+            - Make sure you don't ask any questions.
+            - Triple-check that it makes sense.
+            `;
+            const returnDetails = {linkedInProfile: {
+                userName: profileData.userName,
+                userDescription: profileData.userDescription,
+                experience: topic.details
+            }}
+    
+    
+            const query = promptText + `\n\n` + JSON.stringify(returnDetails)
+            return query
 
-Check these things before you reply:
 
-- Make sure it's a very short sentence.
-- Make sure you have referenced or commented on a detail from the profile, not just repeated it.
-- Make sure you avoid controversial subjects.
-- Make sure you don't ask any questions.
-- Triple-check that it makes sense.
-`;
-        const returnDetails = {linkedInProfile: {
-            userName: profileData.linkedInProfile.userName,
-            userDescription: profileData.linkedInProfile.userDescription,
-            experience: profileData.linkedInProfile.experience
-        }}
-
-
-        const query = promptText + `\n\n` + JSON.stringify(returnDetails)
-        return query
+        }
+        
     }
-    else if (personalisationType === "Activity focus") {
+    else if (topic.type === "Post") {
         let promptText = `I need you to create the first "intro" line of a personalized message.
 
 The intro should be succinct, but obviously personalized.
@@ -120,15 +161,15 @@ Check these things before you reply:
 - Triple-check that it makes sense.
 `;
         const returnDetails = {linkedInProfile: {
-            userName: profileData.linkedInProfile.userName,
-            userDescription: profileData.linkedInProfile.userDescription,
-            posts: profileData.linkedInProfile.posts
+            userName: profileData.userName,
+            userDescription: profileData.userDescription,
+            posts: topic.details
         }}
 
 
         const query = promptText + `\n\n` + JSON.stringify(returnDetails)
         return query
-    } else if (personalisationType === "Beta - suggest common ground") {
+    } else if (topic.type === "Beta - suggest common ground") {
 
     //         let promptText = `I need you to create the first "intro" line of a personalized message.
     

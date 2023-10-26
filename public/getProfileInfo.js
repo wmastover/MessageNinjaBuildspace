@@ -41,8 +41,9 @@ const getPrompt = (url, document) => {
 
       const userDescriptionElement = leftPanel?.children[1]
 
-      if (userDescriptionElement && userDescriptionElement.length > 0) {
-        userDescription = userDescriptionElement.textContent
+      console.log(userDescriptionElement)
+      if (userDescriptionElement) {
+        userDescription = userDescriptionElement.textContent.trim()
       }
       if (name) {
         profileObject.linkedInProfile.userName = name
@@ -102,23 +103,31 @@ const getPrompt = (url, document) => {
           const array = experiencePanelItem.querySelectorAll('span[aria-hidden="true"]')
 
           //if true, run scaper for wierd experience section (multiple jobs at one company)
-          if (experiencePanelItem.querySelector('ul.pvs-list')) {
-              console.log("multiple jobs under one company detected")
+          if (experiencePanelItem.querySelector('.pvs-entity__path-node')) {
+              
               try {
                   const companyName = array[0]?.textContent
-                  console.log(companyName);
-
+                  
                   const jobRoot = experiencePanelItem.querySelector('li')
                   const jobRootChildElements = jobRoot.querySelectorAll('span[aria-hidden="true"]')
-                  jobRootChildElements.forEach((element, index) => {
-                      console.log(`Element ${index}: ${element.textContent}`);
-                  });
 
                   const jobTitle = jobRootChildElements[0]?.textContent
-                  console.log(jobTitle);
+                  
+                  
+                  //handle the edge case where the user puts "full time" into a multiple job "string"
+                  let timeInJobLine = ""
+                  let timeInJob = ""
+                  if (jobRootChildElements[1]?.textContent?.includes(("·"))) {
+                    timeInJobLine = jobRootChildElements[1]?.textContent
+                    timeInJob = jobRootChildElements[1]?.textContent?.split("·")[1]
+                   
+                  } else {
+                    timeInJobLine = jobRootChildElements[2]?.textContent
+                    timeInJob = jobRootChildElements[2]?.textContent?.split("·")[1]
+                    
+                  }
 
-                  let timeInJob = jobRootChildElements[1]?.textContent?.split("·")[1]
-                  console.log(timeInJob);
+                  
                   
                   if (timeInJob?.includes("mos")) {
                     timeInJob = timeInJob.replace("mos", "months")
@@ -133,7 +142,7 @@ const getPrompt = (url, document) => {
 
                   let currentlyDoingThisJob = null
 
-                  if (jobRootChildElements[1]?.textContent?.includes("Present")) {
+                  if (timeInJobLine?.includes("Present")) {
                     currentlyDoingThisJob = true
                   } else {
                     currentlyDoingThisJob = false
@@ -159,12 +168,15 @@ const getPrompt = (url, document) => {
 
             try {
               const jobTitle = array[0].textContent
+              
   
               const companyName = array[1].textContent.split("·")[0]
+              
   
               let currentlyDoingThisJob = null
   
               let timeInJob = array[2].textContent.split("·")[1]
+              
   
               //change abreviations so they never come up in final message
               if (timeInJob.includes("mos")) {
@@ -266,11 +278,10 @@ const getPrompt = (url, document) => {
             let postAge = detailsLine.split("•")[1]
             const postAgeInt = parseInt(postAge.replace("m", "").replace("w", ""));
 
-            console.log(postAge + " post age");
 
             //check if post is over 3 months old, if so don't scrape it
             if (postAge.includes("mo") && postAgeInt > 3) {
-              console.log("post too old ", postAge);
+              
 
             } else {
               postAge = postAge.replace("w", " weeks")
@@ -291,11 +302,6 @@ const getPrompt = (url, document) => {
 
               } else if (postTypeLine.includes("posted")) {
                 postType = "posted"
-
-                console.log("Details line: ", detailsLine);
-                console.log("Post age: ", postAge);
-                console.log("Post type: ", postType);
-
 
 
                 for (let i = 1; i < array.length; i++) {
@@ -330,8 +336,7 @@ const getPrompt = (url, document) => {
 
 
     } catch (err) {
-      console.log("error with activity panel")
-      console.log(err)
+      console.log("error with activity panel", err)
     }
 
 
@@ -375,6 +380,7 @@ const getPrompt = (url, document) => {
       }
     }
 
+    
     // get name and description pannel 
     try {
       // const leftPanel = document.getElementsByClassName("pv-text-details__left-panel")[0]
@@ -393,8 +399,9 @@ const getPrompt = (url, document) => {
       if (userDescriptionElement) {
         userDescription = userDescriptionElement.textContent
       }
+
       if (name) {
-        profileObject.linkedInProfile.userName = name.trim()
+        profileObject.linkedInProfile.userName = name.trim().split(" ")[0]
       }
       if (userDescription) {
         profileObject.linkedInProfile.userDescription = userDescription.trim()
@@ -447,23 +454,22 @@ const getPrompt = (url, document) => {
             console.log("multiple jobs under one company detected")
             try {
               const companyName = experiencePanelItem ? experiencePanelItem.querySelector('[data-anonymize="company-name"]')?.textContent.trim() : null;
-              console.log("company Name:", companyName)
+              
 
               //get first job title
               const jobTitleElement = experiencePanelItem.querySelector('[data-anonymize="job-title"]');
               const jobTitle = jobTitleElement ? jobTitleElement.textContent.trim() : "";
-              console.log("jobtitle:", jobTitle)
-
+              
               // Find an element with the class '_position-time-period-range_1irc72' under 'experiencePanelItem'
               const timePeriodElement = experiencePanelItem.querySelector('._position-time-period-range_1irc72');
               let timePeriod = timePeriodElement? timePeriodElement.textContent : null;
 
-              console.log("timePeriodElement:", timePeriod)
+              
               
               const timeInJobElement = timePeriodElement? timePeriodElement.parentElement : null;
               let timeInJob = timeInJobElement? timeInJobElement.textContent : null;
               timeInJob = timeInJob.replace(timePeriod, "").trim()
-              console.log("timeInJobElement:", timeInJob)
+              
 
               if (timeInJob.includes("mos")) {
                   timeInJob = timeInJob.replace("mos", "months")
@@ -505,25 +511,19 @@ const getPrompt = (url, document) => {
           } else {
             try {
               const companyName = experiencePanelItem ? experiencePanelItem.querySelector('[data-anonymize="company-name"]')?.textContent.trim() : null;
-              console.log("company Name:", companyName)
-
+              
               const jobTitleElement = experiencePanelItem.querySelector('[data-anonymize="job-title"]');
               const jobTitle = jobTitleElement ? jobTitleElement.textContent.trim() : "";
-              console.log("jobtitle:", jobTitle)
-
-              const parentElement = jobTitleElement ? jobTitleElement.parentElement : null;
 
               
               // Find an element with the class '_position-time-period-range_1irc72' under 'experiencePanelItem'
               const timePeriodElement = experiencePanelItem.querySelector('._position-time-period-range_1irc72');
               let timePeriod = timePeriodElement? timePeriodElement.textContent : null;
 
-              console.log("timePeriodElement:", timePeriod)
-              
               const timeInJobElement = timePeriodElement? timePeriodElement.parentElement : null;
               let timeInJob = timeInJobElement? timeInJobElement.textContent : null;
               timeInJob = timeInJob.replace(timePeriod, "").trim()
-              console.log("timeInJobElement:", timeInJob)
+
 
               if (timeInJob.includes("mos")) {
                   timeInJob = timeInJob.replace("mos", "months")
@@ -598,7 +598,7 @@ const getPrompt = (url, document) => {
 
             //check if post is over 3 months old, if so don't scrape it
             if (postAge.includes("mo") && postAgeInt > 3) {
-              console.log("post too old ", postAge);
+              
 
             } else {
               postAge = postAge.replace("w", " weeks")

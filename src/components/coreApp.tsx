@@ -10,6 +10,7 @@ import { sendEvent } from '../functions/sendEvent';
 import { AiOutlineLoading3Quarters,  } from "react-icons/ai"
 import { changeLoading } from '../redux/loadingSlice';
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa"
+import { generateQuery } from '../functions/generateQuery';
 
 export const CoreApp: React.FC = () => {
   // const [showCoreApp, setShowCoreApp] = useState(false);
@@ -21,6 +22,8 @@ export const CoreApp: React.FC = () => {
   const showTag = useSelector((state: any) => state.pages.value.showTag)
   const isLoading = useSelector((state: any) => state.loading.value.loading); // assuming you have a combined reducer and `loading` is the key for this slice
   const topics = useSelector((state: any) => state.topics.value)
+  const linkedInProfile = useSelector((state: any) => state.linkedInProfile.value)
+  const senderslinkedInProfile = useSelector((state: any) => state.messageParams.value.linkedInProfile)
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -33,7 +36,7 @@ export const CoreApp: React.FC = () => {
       setMessageArray([...messageArray, message]);
       setCounterText(`${messageArray.length + 1} of ${messageArray.length + 1 }`);
     }
-  }, [message, isLoading, isUserEdited, topics]) // Add isUserEdited as a dependency
+  }, [message, isLoading, isUserEdited, topics, linkedInProfile, senderslinkedInProfile]) // Add isUserEdited as a dependency
 
   
 
@@ -105,7 +108,6 @@ export const CoreApp: React.FC = () => {
       dispatch(changeMessage({ message: messageArray[index + 1]}));
       setCounterText(`${index + 2} of ${messageArray.length}`);
     }
-
   }
 
   const handleLeftChevron = () => {
@@ -117,10 +119,40 @@ export const CoreApp: React.FC = () => {
       dispatch(changeMessage({ message: messageArray[index - 1]}));
       setCounterText(`${index} of ${messageArray.length}`);
     }
-
-    
   }
 
+
+  const handleTopicClick = (topicIndex: number) => {
+    console.log("topic index", topicIndex)
+
+
+    if (topics[topicIndex]) {
+      dispatch(changeLoading({loading: true}))
+      const generateQueryInput = {
+        sendersProfile: senderslinkedInProfile,
+        receiversProfile: linkedInProfile,
+        topic: topics[topicIndex]
+      }
+      console.log("running generate query")
+      const query = generateQuery(generateQueryInput)
+  
+
+      console.log("sending query to bgs", query)
+      const messageData = {
+        action: "queryGPT",
+        payload: query,
+      }
+      sendEvent(messageData)
+
+      
+
+    } else {
+      window.alert("no topic")
+    }
+    
+    
+    
+  }
   return (
     <>
       <div className='app' >
@@ -186,14 +218,14 @@ export const CoreApp: React.FC = () => {
         </div>
         <div className='topicsContainer'>
           <span className="topicHeader" >👇 Focus on another topic 👇</span>
-          <button  className="button topicButtonTop" onClick={() => {}} >
-            {topics[1]? topics[1].tagline : "No topic found 😭"}
+          <button  className={topics[1] ? "button topicButtonTop" : "buttonUnselectable topicButtonTop"} onClick={() => {handleTopicClick(1)}} >
+            {topics[1]? topics[1].tagline : ""}
           </button>
-          <button  className="button topicButtonMiddle" onClick={() => {}} >
-            {topics[2]? topics[2].tagline : "No topic found 😭"}
+          <button  className={topics[2] ? "button topicButtonMiddle" : "buttonUnselectable topicButtonMiddle"} onClick={() => {handleTopicClick(2)}} >
+            {topics[2]? topics[2].tagline : ""}
           </button>
-          <button  className="button topicButtonBottom" onClick={() => {}} >
-          {topics[3]? topics[3].tagline : "No topic found 😭"}
+          <button  className={topics[3] ? "button topicButtonBottom" : "buttonUnselectable topicButtonBottom"} onClick={() => {handleTopicClick(3)}} >
+          {topics[3]? topics[3].tagline : ""}
           </button>
         </div>
       </div>
